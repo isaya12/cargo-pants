@@ -1,4 +1,4 @@
-import 'package:cargo_pants/screens/home/home.dart';
+import 'package:cargo_pants/screens/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:get/get.dart';
@@ -65,7 +65,7 @@ class OnboadingScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     ElevatedButton(
-                      onPressed: () => Get.to(() => const HomePage()),
+                      onPressed: () => Get.to(() => const LoginScreen()),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: EColors.primary,
                         shape: RoundedRectangleBorder(

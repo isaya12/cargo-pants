@@ -1,16 +1,42 @@
+import 'package:cargo_pants/screens/package/package.dart';
+import 'package:cargo_pants/screens/package/packagedetails/package_details.dart';
+import 'package:cargo_pants/screens/profile/profile.dart';
+// import 'package:cargo_pants/screens/package/package_screen.dart';  // Example import for PackageScreen
+// import 'package:cargo_pants/screens/message_screen.dart';  // Example import for MessageScreen
+// import 'package:cargo_pants/screens/profile_screen.dart';  // Example import for ProfileScreen
 import 'package:cargo_pants/utils/constants/colors.dart';
+import 'package:cargo_pants/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;  // Track selected bottom navigation index
+
+  final List<Widget> _pages = [
+    const HomePage(),  // Home Screen
+    const PackageScreen(),  // Package Screen
+    // const MessageScreen(),  // Message Screen
+    const ProfileScreen(),  // Profile Screen
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: const Text('Kagopoint',style: TextStyle(color: EColors.white),),
+      automaticallyImplyLeading: false,
+        title: const Text(
+          'Kagopoint',
+          style: TextStyle(color: EColors.white, fontSize: ESizes.fontSizeLg),
+        ),
         backgroundColor: EColors.primary,
         elevation: 0,
       ),
@@ -26,16 +52,15 @@ class HomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Your Location',
+                    'Location',
                     style: TextStyle(color: Colors.white70, fontSize: 16),
                   ),
                   const SizedBox(height: 4),
                   const Text(
-                    'Sleman, Yogyakarta',
+                    'Mwananyamla, Dar es Salaam',
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
+                        fontSize: ESizes.fontSizeSm),
                   ),
                   const SizedBox(height: 16),
                   TextField(
@@ -133,7 +158,7 @@ class HomePage extends StatelessWidget {
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        'See All >',
+                        'See All ',
                         style: TextStyle(color: EColors.black),
                       ),
                     ],
@@ -150,9 +175,19 @@ class HomePage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor:EColors.secondary,
+        selectedItemColor: EColors.secondary,
         unselectedItemColor: Colors.grey,
-        currentIndex: 0,
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;  // Update currentIndex when a tab is selected
+          });
+          // Navigate to the respective screen based on the selected index
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
+          );
+        },
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Iconsax.home),
@@ -160,12 +195,9 @@ class HomePage extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(Iconsax.box),
-            label: 'Package',
+            label: 'Parcels',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Iconsax.message),
-            label: 'Message',
-          ),
+          
           BottomNavigationBarItem(
             icon: Icon(Iconsax.user),
             label: 'Profile',
@@ -173,8 +205,6 @@ class HomePage extends StatelessWidget {
         ],
       ),
     );
-
-    
   }
 
   Widget buildIconButton(String label, IconData icon) {
@@ -231,24 +261,38 @@ class HomePage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Receipt: $receipt',
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-            ],
+           const Icon(
+          Iconsax.box,  // You can choose any icon from available ones
+          color: EColors.primary,
+          size: 30,
+        ),
+        const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style:
+                      const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Receipt: $receipt',
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+              ],
+            ),
           ),
-          Text(
-            status,
-            style: TextStyle(fontSize: 12, color: statusColor),
+          TextButton(
+            onPressed: () => Get.to(() => const PackageDetailsScreen()),
+            style: TextButton.styleFrom(
+              foregroundColor: statusColor,
+              padding: EdgeInsets.zero,
+              minimumSize: const Size(50, 20),
+              textStyle: const TextStyle(fontSize: 12),
+            ),
+            child: Text(status),
           ),
         ],
       ),
