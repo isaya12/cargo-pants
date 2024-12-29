@@ -1,4 +1,4 @@
-import 'package:cargo_pants/screens/home/home.dart';
+import 'package:cargo_pants/data/controller/usercontroller.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -6,17 +6,21 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+   LoginScreen({super.key});
+
+  TextEditingController phone = TextEditingController();
+  TextEditingController password = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(UserController());
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios,
           ),
-          onPressed: ()=>Get.back(),
+          onPressed: () => Get.back(),
         ),
         elevation: 0,
         backgroundColor: EColors.primary,
@@ -47,16 +51,38 @@ class LoginScreen extends StatelessWidget {
               _buildTextField(
                 labelText: 'Phone number',
                 prefixIcon: Iconsax.user,
+                controller: phone,
               ),
-              const SizedBox(height:ESizes.spaceBtwSections),
+              const SizedBox(height: ESizes.spaceBtwSections),
               _buildTextField(
                 labelText: 'Password',
                 prefixIcon: Iconsax.password_check,
+                controller: password,
+                obscureText: true,
               ),
-              const SizedBox(
-                height: ESizes.spaceBtwSections,
-              ),
- 
+              // SizedBox(height: ESizes.spaceBtwItems),
+              // Forgot Password Button
+               Row(
+                 children: [
+                  const Spacer(),
+                   TextButton(
+                      onPressed: () {
+                        // Navigate to Forgot Password Screen
+                        // Get.to(() => ForgotPasswordScreen());
+                      },
+                      child: const Text(
+                        'Forgot Password?',
+                        style: TextStyle(
+                          fontSize: ESizes.fontSizeSm,
+                          color: EColors.secondary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                 ],
+               ),
+
+              // Login Button
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -67,7 +93,7 @@ class LoginScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: ()=>Get.to(()=>const HomePage()),
+                  onPressed: () => controller.login(phone.text, password.text),
                   child: const Text(
                     'Log in',
                     style: TextStyle(
@@ -75,6 +101,9 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
+              const SizedBox(height: 16),
+
             ],
           ),
         ),
@@ -85,9 +114,11 @@ class LoginScreen extends StatelessWidget {
   Widget _buildTextField({
     required String labelText,
     required IconData prefixIcon,
+    required TextEditingController controller,
     bool obscureText = false,
   }) {
     return TextField(
+      controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(
         labelText: labelText,

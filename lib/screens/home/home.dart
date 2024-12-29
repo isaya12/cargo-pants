@@ -285,7 +285,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           TextButton(
-            onPressed: () => Get.to(() => const PackageDetailsScreen()),
+            onPressed: () {},
             style: TextButton.styleFrom(
               foregroundColor: statusColor,
               padding: EdgeInsets.zero,

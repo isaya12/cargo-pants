@@ -1,23 +1,30 @@
+import 'package:cargo_pants/model/parcel_model.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class PackageDetailsScreen extends StatelessWidget {
-  const PackageDetailsScreen({super.key});
+  final Parcel parcel;
+
+  const PackageDetailsScreen({super.key, required this.parcel});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: const Text("Package details",style: TextStyle(fontSize: ESizes.fontSizeLg),),
+        title: const Text(
+          "Parcel details",
+          style: TextStyle(fontSize: ESizes.fontSizeLg),
+        ),
         foregroundColor: Colors.white,
         backgroundColor: EColors.primary,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
-          onPressed: ()=>Get.back(),
+          onPressed: () => Get.back(),
         ),
       ),
       body: SingleChildScrollView(
@@ -26,31 +33,9 @@ class PackageDetailsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Horizontal Stepper
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildStep(
-                    label: "Package Details",
-                    isActive: true,
-                  ),
-                  _buildStepDivider(),
-                  _buildStep(
-                    label: "Review Summary",
-                    isActive: true,
-                  ),
-                  _buildStepDivider(),
-                  _buildStep(
-                    label: "Confirmation",
-                    isActive: false,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
               // Review Summary Title
               const Text(
-                "REVIEW SUMMARY",
+                "PARCELS DETAILS",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
@@ -61,46 +46,102 @@ class PackageDetailsScreen extends StatelessWidget {
 
               // Sender Details Card
               buildSummaryCard(
-                title: "Sender Name ",
                 details: {
-                  "Sender Name ": " Bruce Wayne",
-                  "Sender Phone :": " 656 555 678",
-                  "Receiver name :": " Fred john",
-                  "Receiver Phone :": " 656 555 678",
-                  "Transporter name :": " isaya emmanuel",
-                  "Transporter Phone :": " 656 555 678",
+                  "Sender Name:": parcel.senderName,
+                  "Sender Phone:": parcel.senderPhone,
+                  "Receiver Name:": parcel.receiverName,
+                  "Receiver Phone:": parcel.receiverPhone,
+                  "Transporter Name:": parcel.transporterName,
+                  "Transporter Phone:": parcel.transporterPhone,
+                  "Package Name:": parcel.packageName,
+                  "Package Size:": parcel.packageSize,
+                  "Package Type:": parcel.packageType,
+                  "Package Value:": parcel.parcelValue,
+                  "Package Weight:": "${parcel.parcelWeight} kg",
+                  "Destination:": parcel.destination,
+                  "Transportation Price:": "Tsh ${parcel.transportationPrice}",
+                  "Specific Location:": parcel.specifyLocation,
+                  "Description:": parcel.description,
+                  "Branch created:": parcel.branchCreated,
                 },
+                showDivider: {
+                 "Sender Name:": false,
+                  "Sender Phone:": false,
+                  "Receiver Name:": false,
+                  "Receiver Phone:": false,
+                  "Transporter Name:": false,
+                  "Transporter Phone:": true,
+                  "Package Name:": false,
+                  "Package Size:": false,
+                  "Package Type:": false,
+                  "Package Value:": false,
+                  "Package Weight:": false,
+                  "Destination:": true,
+                  "Transportation Price:": false,
+                  "Specific Location:": false,
+                  "Description:": false,
+                  "Branch created:": true,
+               },
               ),
               const SizedBox(height: 16),
 
-              // Receiver Details Card
-              buildSummaryCard(
-                title: "Package Details",
-                details: {
-                  "Package name : ": "Sony phone",
-                  "Package Size : ": "small",
-                  "Package Type : ": "phone",
-                  "Package value : ": "10000",
-                  "Package Weight : ": "1 kg",
-                },
-              ),
-              const SizedBox(height: 16),
+              // Action Buttons Container
+              Container(
+  padding: const EdgeInsets.all(16),
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(12),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.grey.shade200,
+        blurRadius: 4,
+        offset: const Offset(0, 2),
+      ),
+    ],
+  ),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: [
+      ElevatedButton(
+        onPressed: () {
+          AwesomeDialog(
+            context: context,
+            dialogType:DialogType.warning,
+            animType:AnimType.topSlide,
+            showCloseIcon:true,
+            title:'warning',
+            desc: "heloow dear",
+            btnCancelOnPress: () {},
+            btnOkOnPress: () {},
+            btnCancelColor: Colors.red,
+            btnOkColor: Colors.green,
+          ).show();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.green, // Updated property
+          padding: const EdgeInsets.symmetric(
+            vertical: 16,
+            horizontal: 24,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          elevation: 4,
+        ),
+        child: const Text(
+          "Receive",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
+        ),
+      ),
+    ],
+  ),
+),
 
-              // Shipping Fee and Payment
-              buildSummaryCard(
-                title: "Shipping Details",
-                details: {
-                  "Destination : ": "Dar es salaam",
-                  "Transportation Price : ": "Tsh 500",
-                  "Specify location : ": "Mwananyamala",
-                  "Description : ": "Mwananyamala sokoni ",
-                  
-                },
-              ),
               const SizedBox(height: 30),
-
-              // Confirm Order Button
-              const SizedBox(height: 20), // Extra space at the bottom
             ],
           ),
         ),
@@ -108,85 +149,66 @@ class PackageDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStep({required String label, required bool isActive}) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 15,
-          backgroundColor: isActive ? EColors.primary : Colors.grey[400],
-          child: const Icon(
-            Icons.check,
-            size: 15,
-            color: Colors.white,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: isActive ? Colors.black : Colors.grey,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStepDivider() {
-    return Expanded(
-      child: Container(
-        height: 2,
-        color: Colors.grey[400],
-      ),
-    );
-  }
 
   // Function to build a summary card
-  Widget buildSummaryCard(
-      {required String title, required Map<String, String> details}) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade200,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: details.entries.map((entry) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Text(
-                    entry.key,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 14),
-                  ),
+  Widget buildSummaryCard({required Map<String, String> details, required Map<String, bool> showDivider}) {
+  return Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.shade200,
+          blurRadius: 4,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 10),
+        ...details.entries.map((entry) {
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Text(
+                        entry.key,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          entry.value,
+                          style: const TextStyle(fontSize: 14),
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                Expanded(
-                  flex: 4,
-                  child: Text(
-                    entry.value,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ),
-              ],
-            ),
+              ),
+              // Check if we need to display the divider for the current entry
+              if (showDivider[entry.key] == true) const Divider(),
+            ],
           );
         }).toList(),
-      ),
-    );
-  }
+      ],
+    ),
+  );
+}
+
 }

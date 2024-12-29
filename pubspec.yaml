@@ -41,6 +41,9 @@ dependencies:
   logger: ^2.5.0
   get_storage: ^2.1.1
   easy_stepper: ^0.8.5+1
+  http: ^1.2.2
+  shared_preferences: ^2.3.4
+  awesome_dialog: ^3.2.1
 
 dev_dependencies:
   flutter_test:

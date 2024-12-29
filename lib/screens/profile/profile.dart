@@ -1,3 +1,4 @@
+import 'package:cargo_pants/data/controller/usercontroller.dart';
 import 'package:cargo_pants/screens/home/home.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
@@ -117,17 +118,15 @@ class ProfileScreen extends StatelessWidget {
                     height: 30, // Height of the line
                     color: Colors.grey[400], // Color of the line
                   ),
-                  
-                    Column(
-                      children: [
-                        Text(
-                          'Parcel by me',
-                          style: TextStyle(color: EColors.black),
-                        ),
-                        Text('30')
-                      ],
-                    ),
-                  
+                  const Column(
+                    children: [
+                      Text(
+                        'Parcel by me',
+                        style: TextStyle(color: EColors.black),
+                      ),
+                      Text('30')
+                    ],
+                  ),
                   Container(
                     width: 1, // Thickness of the line
                     height: 30, // Height of the line
@@ -163,35 +162,35 @@ class ProfileScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(16),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           'Information',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 16),
-                        InfoRow(
+                        const SizedBox(height: 16),
+                        const InfoRow(
                           icon: Iconsax.user,
                           label: 'Full Name',
                           value: 'fred john akilikubwa',
                         ),
-                        InfoRow(
+                        const InfoRow(
                           icon: Iconsax.message,
                           label: 'Email',
                           value: 'Hello@adalahreza.com',
                         ),
-                        InfoRow(
+                        const InfoRow(
                           icon: Iconsax.call,
                           label: 'Phone',
                           value: '+62 517 218 92 00',
                         ),
-                        InfoRow(
+                        const InfoRow(
                           icon: Iconsax.calendar,
                           label: 'Joined',
                           value: '26 March, 2023',
@@ -204,6 +203,21 @@ class ProfileScreen extends StatelessWidget {
             ),
 
             // Tags Section
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: OutlinedButton(
+                onPressed: () async {
+                  UserController userController = Get.put(UserController());
+                  await userController.logout(); // Call the logout function
+                },
+                child: const Text(
+                  'Logout',
+                  style: TextStyle(
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

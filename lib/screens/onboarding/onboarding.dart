@@ -1,11 +1,22 @@
+// import 'package:cargo_pants/screens/home/home.dart';
 import 'package:cargo_pants/screens/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboadingScreen extends StatelessWidget {
   const OnboadingScreen({super.key});
 
+ Future<void> _completeOnboarding() async {
+    // Save onboarding completion state in SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('initScreen', 1);
+
+    // Navigate to LoginScreen and clear the navigation stack
+    Get.off(() =>  LoginScreen());
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +76,7 @@ class OnboadingScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     ElevatedButton(
-                      onPressed: () => Get.to(() => const LoginScreen()),
+                      onPressed: () => Get.to(() => LoginScreen()),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: EColors.primary,
                         shape: RoundedRectangleBorder(
