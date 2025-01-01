@@ -22,8 +22,7 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _pages = [
     const HomePage(),  // Home Screen
-    const PackageScreen(),  // Package Screen
-    // const MessageScreen(),  // Message Screen
+     PackageScreen(),  // Package Screen
     const ProfileScreen(),  // Profile Screen
   ];
 
@@ -188,7 +187,7 @@ class _HomePageState extends State<HomePage> {
             MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
           );
         },
-        items: const [
+        items: [
           BottomNavigationBarItem(
             icon: Icon(Iconsax.home),
             label: 'Home',

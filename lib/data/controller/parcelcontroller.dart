@@ -3,8 +3,27 @@ import 'package:cargo_pants/model/parcel_model.dart';
 import 'package:cargo_pants/utils/constants/api_constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
+
 
 class ParcelController extends GetxController {
+
+  final senderNameController = TextEditingController();
+  final senderPhoneController = TextEditingController();
+  final receiverNameController = TextEditingController();
+  final receiverPhoneController = TextEditingController();
+  final transporterNameController = TextEditingController();
+  final transporterPhoneController = TextEditingController();
+  final packageNameController = TextEditingController();
+  final packageSizeController = TextEditingController();
+  final packageTypeController = TextEditingController();
+  final parcelValueController = TextEditingController();
+  final parcelWeightController = TextEditingController();
+  final destinationController = TextEditingController();
+  final transportationPriceController = TextEditingController();
+  final specifyLocationController = TextEditingController();
+  final descriptionController = TextEditingController();
+
   static Future<void> createParcel(Map<String, dynamic> parcelData) async {
     final url = Uri.parse('${APIConstants.baseUrl}/api/parcel/create');
     try {

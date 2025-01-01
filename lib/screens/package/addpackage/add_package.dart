@@ -1,83 +1,15 @@
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
+import 'package:cargo_pants/data/controller/parcelcontroller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-class AddPackageScreen extends StatefulWidget {
-  const AddPackageScreen({super.key});
+class AddPackageScreen extends StatelessWidget {
+  AddPackageScreen({super.key});
 
-  @override
-  State<AddPackageScreen> createState() => _AddPackageScreenState();
-}
-
-class _AddPackageScreenState extends State<AddPackageScreen> {
+  ParcelController controller = Get.put(ParcelController());
   final _formKey = GlobalKey<FormState>();
-
-  // Controllers for form fields
-  final TextEditingController senderNameController = TextEditingController();
-  final TextEditingController senderPhoneController = TextEditingController();
-  final TextEditingController receiverNameController = TextEditingController();
-  final TextEditingController receiverPhoneController = TextEditingController();
-  final TextEditingController transporterNameController = TextEditingController();
-  final TextEditingController transporterPhoneController = TextEditingController();
-  final TextEditingController packageNameController = TextEditingController();
-  final TextEditingController packageSizeController = TextEditingController();
-  final TextEditingController packageTypeController = TextEditingController();
-  final TextEditingController parcelValueController = TextEditingController();
-  final TextEditingController parcelWeightController = TextEditingController();
-  final TextEditingController destinationController = TextEditingController();
-  final TextEditingController transportationPriceController = TextEditingController();
-  final TextEditingController specifyLocationController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      final parcelData = {
-        "sender_name": senderNameController.text,
-        "sender_phone": senderPhoneController.text,
-        "receiver_name": receiverNameController.text,
-        "receiver_phone": receiverPhoneController.text,
-        "transporter_name": transporterNameController.text,
-        "transporter_phone": transporterPhoneController.text,
-        "package_name": packageNameController.text,
-        "package_size": packageSizeController.text,
-        "package_type": packageTypeController.text,
-        "parcel_value": double.tryParse(parcelValueController.text) ?? 0.0,
-        "parcel_weight": double.tryParse(parcelWeightController.text) ?? 0.0,
-        "destination": destinationController.text,
-        "transportation_price": double.tryParse(transportationPriceController.text) ?? 0.0,
-        "specify_location": specifyLocationController.text,
-        "description": descriptionController.text,
-      };
-
-      // Call an API or a method to save the data
-      // Example: ApiService.createParcel(parcelData);
-
-      // Get.snackbar("Success", "Parcel created successfully!");
-    }
-  }
-
-  @override
-  void dispose() {
-    // Dispose controllers when not needed
-    senderNameController.dispose();
-    senderPhoneController.dispose();
-    receiverNameController.dispose();
-    receiverPhoneController.dispose();
-    transporterNameController.dispose();
-    transporterPhoneController.dispose();
-    packageNameController.dispose();
-    packageSizeController.dispose();
-    packageTypeController.dispose();
-    parcelValueController.dispose();
-    parcelWeightController.dispose();
-    destinationController.dispose();
-    transportationPriceController.dispose();
-    specifyLocationController.dispose();
-    descriptionController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,95 +47,185 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                 const SizedBox(height: 30),
                 _buildRow(
                   _buildTextField(
-                    controller: senderNameController,
+                    controller: controller.senderNameController,
                     labelText: 'Sender name',
                     prefixIcon: Iconsax.user,
+                    validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Sender name cannot be empty';
+    }
+    return null;
+  },
                   ),
                   _buildTextField(
-                    controller: senderPhoneController,
+                    controller: controller.senderPhoneController,
                     labelText: 'Sender phone',
                     prefixIcon: Iconsax.call,
+                    validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Sender name cannot be empty';
+    }
+    return null;
+  },
                   ),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
-                  controller: receiverNameController,
+                  controller: controller.receiverNameController,
                   labelText: 'Receiver name',
                   prefixIcon: Iconsax.user,
+                  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Sender name cannot be empty';
+    }
+    return null;
+  },
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
-                  controller: receiverPhoneController,
+                  controller: controller.receiverPhoneController,
                   labelText: 'Receiver phone',
                   prefixIcon: Iconsax.call,
+                  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Sender name cannot be empty';
+    }
+    return null;
+  },
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
-                  controller: transporterNameController,
+                  controller: controller.transporterNameController,
                   labelText: 'Transporter name',
                   prefixIcon: Iconsax.truck,
+                  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Sender name cannot be empty';
+    }
+    return null;
+  },
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
-                  controller: transporterPhoneController,
+                  controller: controller.transporterPhoneController,
                   labelText: 'Transporter phone',
                   prefixIcon: Iconsax.call,
+                  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Sender name cannot be empty';
+    }
+    return null;
+  },
                 ),
                 const SizedBox(height: 16),
                 _buildRow(
                   _buildTextField(
-                    controller: packageNameController,
+                    controller: controller.packageNameController,
                     labelText: 'Package name',
                     prefixIcon: Iconsax.box,
+                    validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Sender name cannot be empty';
+    }
+    return null;
+  },
                   ),
                   _buildTextField(
-                    controller: packageSizeController,
+                    controller: controller.packageSizeController,
                     labelText: 'Package Size',
                     prefixIcon: Iconsax.ruler,
+                    validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Sender name cannot be empty';
+    }
+    return null;
+  },
                   ),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
-                  controller: packageTypeController,
+                  controller: controller.packageTypeController,
                   labelText: 'Package Type',
                   prefixIcon: Iconsax.category,
+                  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Sender name cannot be empty';
+    }
+    return null;
+  },
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
-                  controller: parcelValueController,
+                  controller: controller.parcelValueController,
                   labelText: 'Parcel value',
                   prefixIcon: Iconsax.dollar_circle,
+                  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Sender name cannot be empty';
+    }
+    return null;
+  },
                 ),
                 const SizedBox(height: 16),
                 _buildRow(
                   _buildTextField(
-                    controller: parcelWeightController,
+                    controller: controller.parcelWeightController,
                     labelText: 'Parcel Weight',
                     prefixIcon: Iconsax.weight,
+                    validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Sender name cannot be empty';
+    }
+    return null;
+  },
                   ),
                   _buildTextField(
-                    controller: destinationController,
+                    controller: controller.destinationController,
                     labelText: 'Destination',
                     prefixIcon: Iconsax.location,
+                    validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Sender name cannot be empty';
+    }
+    return null;
+  },
                   ),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
-                  controller: transportationPriceController,
+                  controller: controller.transportationPriceController,
                   labelText: 'Transportation Price',
                   prefixIcon: Iconsax.money,
+                  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Sender name cannot be empty';
+    }
+    return null;
+  },
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
-                  controller: specifyLocationController,
+                  controller: controller.specifyLocationController,
                   labelText: 'Specify location',
                   prefixIcon: Iconsax.location,
+                  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Sender name cannot be empty';
+    }
+    return null;
+  },
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
-                  controller: descriptionController,
+                  controller: controller.descriptionController,
                   labelText: 'Description',
                   prefixIcon: Iconsax.document_text,
+                  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Sender name cannot be empty';
+    }
+    return null;
+  },
                 ),
                 const SizedBox(height: 30),
                 SizedBox(
@@ -216,7 +238,13 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: _submitForm,
+                    onPressed:() {
+                      if (_formKey.currentState!.validate()) {
+    // Validation passed, proceed with submission logic
+    Get.snackbar('Success', 'Parcel created successfully',
+        backgroundColor: Colors.green, colorText: Colors.white);
+  } 
+                    },
                     child: const Text(
                       'Submit parcel',
                       style: TextStyle(
@@ -237,15 +265,16 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
     required String labelText,
     required IconData prefixIcon,
     bool obscureText = false,
+    String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter $labelText';
-        }
-        return null;
+      validator: validator ?? (value) {
+      if (value == null || value.isEmpty) {
+        return 'Please enter $labelText';
+      }
+      return null;
       },
       decoration: InputDecoration(
         labelText: labelText,

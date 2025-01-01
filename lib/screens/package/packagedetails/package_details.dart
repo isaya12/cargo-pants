@@ -106,11 +106,25 @@ class PackageDetailsScreen extends StatelessWidget {
         onPressed: () {
           AwesomeDialog(
             context: context,
-            dialogType:DialogType.warning,
+            // dialogType:DialogType.success,
             animType:AnimType.topSlide,
             showCloseIcon:true,
-            title:'warning',
-            desc: "heloow dear",
+            title:'OK if you receive Parcel',
+            desc: "please enter message",
+                  body: Column(
+        children: [
+          // Text Input Field
+          TextField(
+            decoration: InputDecoration(
+              labelText: 'Receive description',
+              hintText: ' message...',
+              border: OutlineInputBorder(),
+            ),
+            maxLines: 2, // Allow multiline input
+            keyboardType: TextInputType.text,
+          ),
+        ],
+      ),
             btnCancelOnPress: () {},
             btnOkOnPress: () {},
             btnCancelColor: Colors.red,
