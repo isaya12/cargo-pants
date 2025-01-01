@@ -58,8 +58,8 @@ class Parcel {
       'price': transportationPrice,
       'specific_location': specifyLocation,
       'description': description,
-      'bname': branchCreated,
-      // 'bname': createdat,
+      // 'bname': branchCreated,
+    
     };
                            	
                            	// "branch_to":"3",

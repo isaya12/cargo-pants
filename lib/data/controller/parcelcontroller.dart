@@ -27,17 +27,18 @@ class ParcelController extends GetxController {
   static Future<void> createParcel(Map<String, dynamic> parcelData) async {
     final url = Uri.parse('${APIConstants.baseUrl}/api/parcel/create');
     try {
+      print('Payload: ${jsonEncode(parcelData)}');
+    
       final response = await http.post(
         url,
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInVzZXJfZGF0YSI6eyJpZCI6Nywicm9sZSI6MiwiY3JlYXRlciI6NCwiY29tcGFueV9uYW1lIjoiTXV2dXppc2hhIiwicm9sZV9uYW1lIjoiQWRtaW4iLCJwaG9uZTEiOiIwNjE1NDk4MDI2IiwidXNlcm5hbWUiOiIwNjE1NDk4MDI2IiwiZnVsbmFtZSI6IklzYXlhIEJ1c2luZXNzICIsImJyYW5jaF9pZCI6MywiY29tcGFueV9pZCI6Mn0sImlhdCI6MTczNTQwMzE4MiwiZXhwIjoxNzY4MDYyMzgyLCJzdWIiOiJhY2Nlc3NBcGkifQ.NcwONl7Tav2nlh8col4PDSh9lnDQShODM5HC1q3ukLc',
         },
         body: jsonEncode(parcelData),
       );
-
-      print('response body: ${response.body}');
       if (response.statusCode == 200) {
-        print('success');
+        print('Parcel created successfully: ${response.body}');
       } else {
         throw Exception('Failed to create parcel: ${response.body}');
       }

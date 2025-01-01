@@ -238,12 +238,37 @@ class AddPackageScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed:() {
+                    onPressed: () {
                       if (_formKey.currentState!.validate()) {
-    // Validation passed, proceed with submission logic
-    Get.snackbar('Success', 'Parcel created successfully',
-        backgroundColor: Colors.green, colorText: Colors.white);
-  } 
+                        Map<String, dynamic> parcelData = {
+                          "senderName": controller.senderNameController.text,
+                          "senderPhone": controller.senderPhoneController.text,
+                          "receiverName":
+                              controller.receiverNameController.text,
+                          "receiverPhone":
+                              controller.receiverPhoneController.text,
+                          "packageName":
+                              controller.packageNameController.text,
+                          "packageSize":
+                              controller.packageSizeController.text,
+                          "parcelValue":
+                              controller.parcelValueController.text,
+                          "destination":
+                              controller.destinationController.text,
+                        };
+
+                        ParcelController.createParcel(parcelData)
+                            .then((value) => Get.snackbar(
+                                  'Success',
+                                  'Parcel created successfully!',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                ))
+                            .catchError((error) => Get.snackbar(
+                                  'Error',
+                                  error.toString(),
+                                  snackPosition: SnackPosition.BOTTOM,
+                                ));
+                      }
                     },
                     child: const Text(
                       'Submit parcel',

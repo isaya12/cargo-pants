@@ -233,6 +233,7 @@ class PackageScreen extends StatelessWidget {
   Widget buildParcelItem(Parcel parcel) {
     final DateTime parsedDate = DateTime.parse(parcel.createdat);
     final String formattedDate = DateFormat('d, MMM yyyy').format(parsedDate);
+     String locationInfo = isIncoming.value ? parcel.branchCreated : parcel.destination;
     return GestureDetector(
       onTap: () => Get.to(() => PackageDetailsScreen(parcel: parcel)),
       child: Container(
@@ -262,11 +263,7 @@ class PackageScreen extends StatelessWidget {
                 ],
               ),
             ),
-            TextButton(
-              onPressed: () =>
-                  Get.to(() => PackageDetailsScreen(parcel: parcel)),
-              child: Text(formattedDate),
-            ),
+            Text(locationInfo),
           ],
         ),
       ),
