@@ -35,7 +35,7 @@ class UserController extends GetxController {
             // Save the accessToken and userId
             saveToken(accessToken);
             saveUserId(userId.toString()); // Save userId as a string
-            print('User token: $accessToken');
+            // print('User token: $accessToken');
             // print('User ID: $userId');
             Get.offAll(() => const HomePage());
           } else {
@@ -73,8 +73,13 @@ class UserController extends GetxController {
 
   // Save the token in GetStorage
   void saveToken(String token) {
+  if (token.isNotEmpty) {
     storage.write('token', token);
+    print('Token saved: $token'); // Debug log for verification
+  } else {
+    print('Error: Attempted to save an empty token.');
   }
+}
 
   // Save the user ID in GetStorage
   void saveUserId(String userId) {
@@ -83,8 +88,12 @@ class UserController extends GetxController {
 
   // Retrieve the token from GetStorage
   String? getToken() {
-    return storage.read('token');
+  final token = storage.read<String>('token');
+  if (token != null && token.isNotEmpty) {
+    return token;
   }
+  return null;
+}
 
   // Retrieve the user ID from GetStorage
   String? getUserId() {
@@ -100,7 +109,7 @@ class UserController extends GetxController {
   Future<void> logout() async {
     final url = Uri.parse('${APIConstants.baseUrl}/api/auth/logout');
     try {
-      final token = getToken();
+      final token =  await GetStorage().read('token');
       if (token == null) {
         Get.snackbar(
           'Error',
@@ -114,7 +123,7 @@ class UserController extends GetxController {
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
+          'Authorization':token,
         },
       );
       print('body:${response.body}');

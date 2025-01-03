@@ -1,18 +1,20 @@
+import 'dart:ffi';
+
+import 'package:cargo_pants/data/controller/parcelcontroller.dart';
 import 'package:flutter/material.dart';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cargo_pants/model/parcel_model.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
-import 'package:cargo_pants/screens/receipt/receipt.dart';
-import 'package:pdf/pdf.dart';
+import 'package:pdf/pdf.dart' as pw;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:get/get.dart';
 
 class PackageDetailsScreen extends StatelessWidget {
   final Parcel parcel;
-
-  const PackageDetailsScreen({super.key, required this.parcel});
+  final int id;
+  const PackageDetailsScreen(
+      {super.key, required this.parcel, required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -147,32 +149,51 @@ class PackageDetailsScreen extends StatelessWidget {
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween, // Add space between buttons
+            mainAxisAlignment:
+                MainAxisAlignment.spaceBetween, // Add space between buttons
             children: [
               if (parcel.branchCreated != userBranch) ...[
-                buildButton(context, "Receive", Colors.green, showReceiveDialog),
+                buildButton(context, "Receive", Colors.green, () {
+                  // Call showActionDialog with "receive" as the action type
+                  showActionDialog(context, "receive");
+                }),
                 buildButton(context, "Print", Colors.blue, () async {
-                  final pdf = await _generatePdf();
-                  await Printing.layoutPdf(
-                    onLayout: (PdfPageFormat format) async => pdf.save(),
-                  );
+                  try {
+                    int parcelId = id;
+                    // final parcel =
+                        // await ParcelController.printReceiptParcel(parcelId);
+                    print(" parcel id: ${id}");
+                    final pdf = await _generatePdf(parcel!);
+                    print(" parcel details: ${parcel}");
+
+                    await Printing.layoutPdf(
+                      onLayout: (pw.PdfPageFormat format) async => pdf.save(),
+                    );
+                  } catch (e) {
+                    print("Error: $e");
+                  }
                 }),
               ]
             ],
           ),
           const SizedBox(height: 8), // Add space between rows
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween, // Add space between buttons
+            mainAxisAlignment:
+                MainAxisAlignment.spaceBetween, // Add space between buttons
             children: [
               if (parcel.branchCreated != userBranch) ...[
                 buildButton(context, "Update", Colors.orange, () {
                   // Implement update logic
                 }),
                 buildButton(context, "Delete", Colors.red, () {
-                  // Implement delete logic
+                  // Call showActionDialog with "delete" as the action type
+                  showActionDialog(context, "delete");
                 }),
               ] else if (parcel.branchCreated == userBranch) ...[
-                buildButton(context, "Receive", Colors.green, showReceiveDialog),
+                buildButton(context, "Receive", Colors.green, () {
+                  // Call showActionDialog with "receive" as the action type
+                  showActionDialog(context, "receive");
+                }),
               ],
             ],
           ),
@@ -211,41 +232,89 @@ class PackageDetailsScreen extends StatelessWidget {
   }
 
   // Show dialog for receiving parcel
-  void showReceiveDialog() {
-    AwesomeDialog(
-      context: Get.context!, // Use Get.context for context
-      animType: AnimType.topSlide,
-      showCloseIcon: true,
-      title: "Receive Parcel",
-      desc: "Please provide a description for receiving the parcel",
-      body: Column(
-        children: [
-          TextField(
-            decoration: const InputDecoration(
-              labelText: "Receive Description",
-              hintText: "Enter message...",
-              border: OutlineInputBorder(),
-            ),
-            maxLines: 2,
+  void showActionDialog(BuildContext context, String actionType) {
+    TextEditingController _descriptionController = TextEditingController();
+
+    // Determine the message and action based on the actionType (receive or delete)
+    String title = actionType == "receive" ? 'Receive Parcel' : 'Delete Parcel';
+    String hintText = actionType == "receive"
+        ? 'Please provide a description for receiving the parcel'
+        : 'Please provide a reason for deleting the parcel';
+
+    String buttonLabel = actionType == "receive" ? 'Receive' : 'Delete';
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(hintText),
+              SizedBox(height: 10),
+              TextField(
+                minLines: 2,
+                maxLines: 2,
+                controller: _descriptionController,
+                decoration: InputDecoration(
+                  labelText: actionType == "receive"
+                      ? 'Description....'
+                      : 'Reason....',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-      btnCancelOnPress: () {},
-      btnOkOnPress: () {
-        // Implement logic for receiving parcel
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                String description = _descriptionController.text;
+                Navigator.of(context).pop();
+
+                if (actionType == "receive") {
+                  // Call receiveParcel() method and pass the description
+                  await ParcelController().receiveParcel(parcel, description);
+                } else if (actionType == "delete") {
+                  // Call deleteParcel() method and pass the reason
+                  await ParcelController().removeParcel(parcel, description);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+              ),
+              child: Text(
+                buttonLabel,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
       },
-      btnCancelColor: Colors.red,
-      btnOkColor: Colors.green,
-    ).show();
+    );
   }
 
   // PDF generation
-  Future<pw.Document> _generatePdf() async {
+  Future<pw.Document> _generatePdf(Parcel parcel) async {
     final pdf = pw.Document();
 
     pdf.addPage(
       pw.Page(
-        pageFormat: PdfPageFormat.a4,
+        pageFormat: pw.PdfPageFormat.a4,
         build: (context) {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -253,10 +322,21 @@ class PackageDetailsScreen extends StatelessWidget {
               pw.Align(
                 alignment: pw.Alignment.center,
                 child: pw.Text(
-                  "TRUST FIRST", 
+                  "Kagopoint",
                   style: pw.TextStyle(
                     fontWeight: pw.FontWeight.bold,
-                    fontSize: 25,
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+              pw.SizedBox(height: 15),
+              pw.Align(
+                alignment: pw.Alignment.center,
+                child: pw.Text(
+                  "TRUST FIRST",
+                  style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 20,
                   ),
                 ),
               ),
@@ -264,7 +344,7 @@ class PackageDetailsScreen extends StatelessWidget {
               pw.Align(
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
-                  "Cargo Receipt", 
+                  "Cargo Receipt",
                   style: pw.TextStyle(
                     fontSize: 16,
                   ),
@@ -273,8 +353,45 @@ class PackageDetailsScreen extends StatelessWidget {
               pw.Align(
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
-                  "Booking ID: ${parcel.senderName}",
+                  "Booking ID: ${parcel.barcodeId}",
                   style: pw.TextStyle(fontSize: 16),
+                ),
+              ),
+              pw.Align(
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
+                  "Brand name: ${parcel.barcodeId}",
+                  style: const pw.TextStyle(fontSize: 16),
+                ),
+              ),
+              pw.SizedBox(height: 10),
+              pw.Align(
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
+                  "Jouney route: ${parcel.barcodeId}",
+                  style: const pw.TextStyle(fontSize: 16),
+                ),
+              ),
+              pw.Align(
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
+                  "shiping date: ${parcel.barcodeId}",
+                  style: const pw.TextStyle(fontSize: 16),
+                ),
+              ),
+              pw.Align(
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
+                  "Alive date: ${parcel.barcodeId}",
+                  style: const pw.TextStyle(fontSize: 16),
+                ),
+              ),
+              pw.SizedBox(height: 10),
+              pw.Align(
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
+                  "Paid amount: ${parcel.barcodeId}",
+                  style: const pw.TextStyle(fontSize: 16),
                 ),
               ),
               pw.SizedBox(height: 10),
@@ -283,7 +400,7 @@ class PackageDetailsScreen extends StatelessWidget {
                 child: pw.Text(
                   "Sender Details",
                   style: pw.TextStyle(
-                    fontSize: 16, 
+                    fontSize: 16,
                     fontWeight: pw.FontWeight.bold,
                   ),
                 ),
@@ -299,21 +416,21 @@ class PackageDetailsScreen extends StatelessWidget {
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
                   "Sender Phone: ${parcel.senderPhone}",
-                  style: pw.TextStyle(fontSize: 12),
+                  style: pw.TextStyle(fontSize: 16),
                 ),
               ),
               pw.Align(
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
-                  "Receiver Name: ${parcel.senderPhone}",
-                  style: pw.TextStyle(fontSize: 12),
+                  "Receiver Name: ${parcel.receiverName}",
+                  style: pw.TextStyle(fontSize: 16),
                 ),
               ),
               pw.Align(
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
-                  "Receiver Phone: ${parcel.senderPhone}",
-                  style: pw.TextStyle(fontSize: 12),
+                  "Receiver Phone: ${parcel.receiverPhone}",
+                  style: pw.TextStyle(fontSize: 16),
                 ),
               ),
               pw.SizedBox(height: 10),
@@ -322,7 +439,7 @@ class PackageDetailsScreen extends StatelessWidget {
                 child: pw.Text(
                   "Package Information",
                   style: pw.TextStyle(
-                    fontSize: 14, 
+                    fontSize: 16,
                     fontWeight: pw.FontWeight.bold,
                   ),
                 ),
@@ -330,29 +447,22 @@ class PackageDetailsScreen extends StatelessWidget {
               pw.Align(
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
-                  "Description: ${parcel.description}",
-                  style: pw.TextStyle(fontSize: 12),
-                ),
-              ),
-              pw.Align(
-                alignment: pw.Alignment.centerLeft,
-                child: pw.Text(
-                  "Package Name: ${parcel.description}",
-                  style: pw.TextStyle(fontSize: 12),
+                  "Package Name: ${parcel.packageName}",
+                  style: pw.TextStyle(fontSize: 16),
                 ),
               ),
               pw.Align(
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
                   "Package Weight: ${parcel.description}",
-                  style: pw.TextStyle(fontSize: 12),
+                  style: pw.TextStyle(fontSize: 16),
                 ),
               ),
               pw.Align(
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
-                  "Package Size: ${parcel.description}",
-                  style: pw.TextStyle(fontSize: 12),
+                  "Package Size: ${parcel.packageSize}",
+                  style: pw.TextStyle(fontSize: 16),
                 ),
               ),
               pw.Align(
@@ -408,14 +518,14 @@ class PackageDetailsScreen extends StatelessWidget {
               pw.Align(
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
-                  " Dar es salaam : ${parcel.description}",
+                  "${parcel.fromRegion} : ${parcel.description}",
                   style: pw.TextStyle(fontSize: 12),
                 ),
               ),
               pw.Align(
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
-                  "Dodoma : ${parcel.description}",
+                  "${parcel.toRegion} : ${parcel.description}",
                   style: pw.TextStyle(fontSize: 12),
                 ),
               ),
@@ -424,7 +534,7 @@ class PackageDetailsScreen extends StatelessWidget {
                 child: pw.Text(
                   "Asante kwa kuchagua TRUST FIRST",
                   style: pw.TextStyle(
-                    fontSize: 14, 
+                    fontSize: 14,
                     fontWeight: pw.FontWeight.bold,
                   ),
                 ),

@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'package:cargo_pants/data/controller/usercontroller.dart';
 import 'package:cargo_pants/model/parcel_model.dart';
 import 'package:cargo_pants/utils/constants/api_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:cargo_pants/screens/home/home.dart';
 import 'package:cargo_pants/screens/package/addpackage/add_package.dart';
 import 'package:cargo_pants/screens/package/packagedetails/package_details.dart';
-import 'package:cargo_pants/screens/profile/profile.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
 import 'package:get/get.dart';
@@ -29,7 +26,7 @@ class PackageScreen extends StatelessWidget {
     final response = await http.get(
       Uri.parse(endpoint),
       headers: {
-        'Authorization': token ?? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInVzZXJfZGF0YSI6eyJpZCI6Nywicm9sZSI6MiwiY3JlYXRlciI6NCwiY29tcGFueV9uYW1lIjoiTXV2dXppc2hhIiwicm9sZV9uYW1lIjoiQWRtaW4iLCJwaG9uZTEiOiIwNjE1NDk4MDI2IiwidXNlcm5hbWUiOiIwNjE1NDk4MDI2IiwiZnVsbmFtZSI6IklzYXlhIEJ1c2luZXNzICIsImJyYW5jaF9pZCI6MywiY29tcGFueV9pZCI6Mn0sImlhdCI6MTczNTQwMzE4MiwiZXhwIjoxNzY4MDYyMzgyLCJzdWIiOiJhY2Nlc3NBcGkifQ.NcwONl7Tav2nlh8col4PDSh9lnDQShODM5HC1q3ukLc',
+        'Authorization': token,
       },
     );
 
@@ -88,18 +85,8 @@ class PackageScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const TextField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Search....',
-                            prefixIcon: Icon(Icons.search),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(12)),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
+              
+                        // const SizedBox(height: 16),
                                             Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -235,7 +222,7 @@ class PackageScreen extends StatelessWidget {
     final String formattedDate = DateFormat('d, MMM yyyy').format(parsedDate);
      String locationInfo = isIncoming.value ? parcel.branchCreated : parcel.destination;
     return GestureDetector(
-      onTap: () => Get.to(() => PackageDetailsScreen(parcel: parcel)),
+      onTap: () => Get.to(() => PackageDetailsScreen(parcel: parcel, id:parcel.id ,)),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
         padding: const EdgeInsets.all(12),

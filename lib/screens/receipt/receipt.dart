@@ -35,7 +35,8 @@ class ReceiptScreen extends StatelessWidget {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              pw.Text("TRUST FIRST", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+              pw.Text("TRUST FIRST",
+                  style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(height: 8),
               pw.Text("Cargo Receipt", style: pw.TextStyle(fontSize: 12)),
               pw.Text("Booking ID: 84379321"),

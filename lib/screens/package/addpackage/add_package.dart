@@ -1,6 +1,7 @@
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
 import 'package:cargo_pants/data/controller/parcelcontroller.dart';
+import 'package:cargo_pants/utils/constants/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -10,6 +11,14 @@ class AddPackageScreen extends StatelessWidget {
 
   ParcelController controller = Get.put(ParcelController());
   final _formKey = GlobalKey<FormState>();
+  // List of dropdown items
+  final List<ParcelSizes> _parcelSizes = ParcelSizes.values;
+
+  // ValueNotifier to manage the selected value
+  final ValueNotifier<ParcelSizes?> _selectedParcelSize =
+      ValueNotifier<ParcelSizes?>(null);
+
+      
 
   @override
   Widget build(BuildContext context) {
@@ -51,22 +60,22 @@ class AddPackageScreen extends StatelessWidget {
                     labelText: 'Sender name',
                     prefixIcon: Iconsax.user,
                     validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Sender name cannot be empty';
-    }
-    return null;
-  },
+                      if (value == null || value.isEmpty) {
+                        return 'Sender name cannot be empty';
+                      }
+                      return null;
+                    },
                   ),
                   _buildTextField(
                     controller: controller.senderPhoneController,
                     labelText: 'Sender phone',
                     prefixIcon: Iconsax.call,
                     validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Sender name cannot be empty';
-    }
-    return null;
-  },
+                      if (value == null || value.isEmpty) {
+                        return 'Sender name cannot be empty';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -75,11 +84,11 @@ class AddPackageScreen extends StatelessWidget {
                   labelText: 'Receiver name',
                   prefixIcon: Iconsax.user,
                   validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Sender name cannot be empty';
-    }
-    return null;
-  },
+                    if (value == null || value.isEmpty) {
+                      return 'Sender name cannot be empty';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
@@ -87,11 +96,11 @@ class AddPackageScreen extends StatelessWidget {
                   labelText: 'Receiver phone',
                   prefixIcon: Iconsax.call,
                   validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Sender name cannot be empty';
-    }
-    return null;
-  },
+                    if (value == null || value.isEmpty) {
+                      return 'Sender name cannot be empty';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
@@ -99,11 +108,11 @@ class AddPackageScreen extends StatelessWidget {
                   labelText: 'Transporter name',
                   prefixIcon: Iconsax.truck,
                   validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Sender name cannot be empty';
-    }
-    return null;
-  },
+                    if (value == null || value.isEmpty) {
+                      return 'Sender name cannot be empty';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
@@ -111,11 +120,11 @@ class AddPackageScreen extends StatelessWidget {
                   labelText: 'Transporter phone',
                   prefixIcon: Iconsax.call,
                   validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Sender name cannot be empty';
-    }
-    return null;
-  },
+                    if (value == null || value.isEmpty) {
+                      return 'Sender name cannot be empty';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 _buildRow(
@@ -124,35 +133,58 @@ class AddPackageScreen extends StatelessWidget {
                     labelText: 'Package name',
                     prefixIcon: Iconsax.box,
                     validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Sender name cannot be empty';
-    }
-    return null;
-  },
+                      if (value == null || value.isEmpty) {
+                        return 'Sender name cannot be empty';
+                      }
+                      return null;
+                    },
                   ),
                   _buildTextField(
-                    controller: controller.packageSizeController,
-                    labelText: 'Package Size',
-                    prefixIcon: Iconsax.ruler,
+                    controller: controller.packageNameController,
+                    labelText: 'Package name',
+                    prefixIcon: Iconsax.box,
                     validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Sender name cannot be empty';
-    }
-    return null;
-  },
+                      if (value == null || value.isEmpty) {
+                        return 'Sender name cannot be empty';
+                      }
+                      return null;
+                    },
                   ),
-                ),
+//                  ValueListenableBuilder<ParcelSizes?>(
+//   // valueListenable: controller.packageSize, // Use the controller's property
+//   builder: (context, value, _) {
+//     return DropdownButtonFormField<ParcelSizes>(
+//       decoration: InputDecoration(
+//         labelText: 'Parcel Size',
+//         border: OutlineInputBorder(
+//           borderRadius: BorderRadius.circular(10),
+//         ),
+//       ),
+//       value: value,
+//       items: _parcelSizes.map((ParcelSizes size) {
+//         return DropdownMenuItem<ParcelSizes>(
+//           value: size,
+//           child: Text(size.toString().split('.').last), // Display enum value
+//         );
+//       }).toList(),
+//       onChanged: (ParcelSizes? newValue) {
+//         controller.updateParcelSize(newValue); // Update the controller's property
+//       },
+//     );
+//   },
+// ),
+),
                 const SizedBox(height: 16),
                 _buildTextField(
                   controller: controller.packageTypeController,
                   labelText: 'Package Type',
                   prefixIcon: Iconsax.category,
                   validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Sender name cannot be empty';
-    }
-    return null;
-  },
+                    if (value == null || value.isEmpty) {
+                      return 'Sender name cannot be empty';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
@@ -160,11 +192,11 @@ class AddPackageScreen extends StatelessWidget {
                   labelText: 'Parcel value',
                   prefixIcon: Iconsax.dollar_circle,
                   validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Sender name cannot be empty';
-    }
-    return null;
-  },
+                    if (value == null || value.isEmpty) {
+                      return 'Sender name cannot be empty';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 _buildRow(
@@ -173,22 +205,22 @@ class AddPackageScreen extends StatelessWidget {
                     labelText: 'Parcel Weight',
                     prefixIcon: Iconsax.weight,
                     validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Sender name cannot be empty';
-    }
-    return null;
-  },
+                      if (value == null || value.isEmpty) {
+                        return 'Sender name cannot be empty';
+                      }
+                      return null;
+                    },
                   ),
                   _buildTextField(
                     controller: controller.destinationController,
                     labelText: 'Destination',
                     prefixIcon: Iconsax.location,
                     validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Sender name cannot be empty';
-    }
-    return null;
-  },
+                      if (value == null || value.isEmpty) {
+                        return 'Sender name cannot be empty';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -197,11 +229,11 @@ class AddPackageScreen extends StatelessWidget {
                   labelText: 'Transportation Price',
                   prefixIcon: Iconsax.money,
                   validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Sender name cannot be empty';
-    }
-    return null;
-  },
+                    if (value == null || value.isEmpty) {
+                      return 'Sender name cannot be empty';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
@@ -209,11 +241,11 @@ class AddPackageScreen extends StatelessWidget {
                   labelText: 'Specify location',
                   prefixIcon: Iconsax.location,
                   validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Sender name cannot be empty';
-    }
-    return null;
-  },
+                    if (value == null || value.isEmpty) {
+                      return 'Sender name cannot be empty';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
@@ -221,11 +253,11 @@ class AddPackageScreen extends StatelessWidget {
                   labelText: 'Description',
                   prefixIcon: Iconsax.document_text,
                   validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Sender name cannot be empty';
-    }
-    return null;
-  },
+                    if (value == null || value.isEmpty) {
+                      return 'Sender name cannot be empty';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 30),
                 SizedBox(
@@ -247,16 +279,12 @@ class AddPackageScreen extends StatelessWidget {
                               controller.receiverNameController.text,
                           "receiverPhone":
                               controller.receiverPhoneController.text,
-                          "packageName":
-                              controller.packageNameController.text,
-                          "packageSize":
-                              controller.packageSizeController.text,
-                          "parcelValue":
-                              controller.parcelValueController.text,
-                          "destination":
-                              controller.destinationController.text,
+                          "packageName": controller.packageNameController.text,
+                          "packageSize": controller.packageSize.value
+                              ?.toString(), // Include the selected parcel size
+                          "parcelValue": controller.parcelValueController.text,
+                          "destination": controller.destinationController.text,
                         };
-
                         ParcelController.createParcel(parcelData)
                             .then((value) => Get.snackbar(
                                   'Success',
@@ -295,12 +323,13 @@ class AddPackageScreen extends StatelessWidget {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
-      validator: validator ?? (value) {
-      if (value == null || value.isEmpty) {
-        return 'Please enter $labelText';
-      }
-      return null;
-      },
+      validator: validator ??
+          (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter $labelText';
+            }
+            return null;
+          },
       decoration: InputDecoration(
         labelText: labelText,
         prefixIcon: Icon(prefixIcon),
