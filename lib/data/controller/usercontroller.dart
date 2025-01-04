@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cargo_pants/screens/home/home.dart';
 import 'package:cargo_pants/screens/login/login.dart';
+import 'package:cargo_pants/screens/navigation/navigation_menu.dart';
 import 'package:http/http.dart' as http;
 import 'package:cargo_pants/utils/constants/api_constants.dart';
 import 'package:get/get.dart';
@@ -8,7 +9,6 @@ import 'package:get_storage/get_storage.dart';
 
 class UserController extends GetxController {
   RxBool isLoading = false.obs;
-  
 
   final GetStorage storage = GetStorage(); // GetStorage instance
 
@@ -29,15 +29,19 @@ class UserController extends GetxController {
         if (data['success'] == true && data['token'] != null) {
           // Extract the accessToken and userId
           final accessToken = data['token']['accessToken'];
-          final userId = data['user']['id']; // Assuming 'user' has 'id' key
+          final userId = data['user']['id']; 
+          final branchImage = data['user']['branch_image'];// Assuming 'user' has 'id' key
 
           if (accessToken is String && userId != null) {
             // Save the accessToken and userId
             saveToken(accessToken);
-            saveUserId(userId.toString()); // Save userId as a string
+            saveUserId(userId.toString());
+            saveBranchId(data['user']['branch_id']
+                .toString()); 
+                saveBranchImage(branchImage);// Save userId as a string
             // print('User token: $accessToken');
             // print('User ID: $userId');
-            Get.offAll(() => const HomePage());
+            Get.offAll(() => const NavigationMenu());
           } else {
             Get.snackbar(
               'Login Failed',
@@ -73,11 +77,23 @@ class UserController extends GetxController {
 
   // Save the token in GetStorage
   void saveToken(String token) {
-  if (token.isNotEmpty) {
-    storage.write('token', token);
-    print('Token saved: $token'); // Debug log for verification
+    if (token.isNotEmpty) {
+      storage.write('token', token);
+      print('Token saved: $token'); // Debug log for verification
+    } else {
+      print('Error: Attempted to save an empty token.');
+    }
+  }
+
+  void saveBranchId(String branchId) {
+    storage.write('branchId', branchId);
+  }
+  void saveBranchImage(String branchImage) {
+  if (branchImage.isNotEmpty) {
+    storage.write('branchImage', branchImage);
+    print('Branch image saved: $branchImage');
   } else {
-    print('Error: Attempted to save an empty token.');
+    print('Error: Branch image is empty.');
   }
 }
 
@@ -88,12 +104,12 @@ class UserController extends GetxController {
 
   // Retrieve the token from GetStorage
   String? getToken() {
-  final token = storage.read<String>('token');
-  if (token != null && token.isNotEmpty) {
-    return token;
+    final token = storage.read<String>('token');
+    if (token != null && token.isNotEmpty) {
+      return token;
+    }
+    return null;
   }
-  return null;
-}
 
   // Retrieve the user ID from GetStorage
   String? getUserId() {
@@ -109,7 +125,7 @@ class UserController extends GetxController {
   Future<void> logout() async {
     final url = Uri.parse('${APIConstants.baseUrl}/api/auth/logout');
     try {
-      final token =  await GetStorage().read('token');
+      final token = await GetStorage().read('token');
       if (token == null) {
         Get.snackbar(
           'Error',
@@ -123,7 +139,7 @@ class UserController extends GetxController {
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization':token,
+          'Authorization': token,
         },
       );
       print('body:${response.body}');
@@ -150,4 +166,6 @@ class UserController extends GetxController {
       );
     }
   }
+
+  
 }

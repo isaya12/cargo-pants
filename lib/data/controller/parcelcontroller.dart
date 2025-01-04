@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 
 class ParcelController extends GetxController {
+   Future<List<String>>? packageTypesFuture;
 
   final senderNameController = TextEditingController();
   final senderPhoneController = TextEditingController();
@@ -37,22 +38,8 @@ class ParcelController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-  //   fetchDestinations();
-  //   senderNameController.dispose();
-  //   senderPhoneController.dispose();
-  //   receiverNameController.dispose();
-  //   receiverPhoneController.dispose();
-  //   transporterNameController.dispose();
-  //   transporterPhoneController.dispose();
-  //   packageNameController.dispose();
-  //   packageTypeController.dispose();
-  //   parcelValueController.dispose();
-  //   parcelWeightController.dispose();
-  //   destinationController.dispose();
-  //   transportationPriceController.dispose();
-  //   specifyLocationController.dispose();
-  //   descriptionController.dispose();
-  //   super.onClose();
+    packageTypesFuture = fetchPackageTypes(); // Ensure this is called here
+  
   }
 
   static Future<void> createParcel(Map<String, dynamic> parcelData) async {
@@ -223,5 +210,21 @@ Future<void> removeParcel(Parcel  parcel,String description) async {
   }
 }
 
+
+Future<List<String>> fetchPackageTypes() async {
+  try {
+    final response = await http.get(Uri.parse('${APIConstants.baseUrl}/api/tag/all-tags'));
+    
+    if (response.statusCode == 200) {
+      // Parse the JSON response
+      List<dynamic> data = json.decode(response.body);
+      return data.map((e) => e['name'] as String).toList();  // Assuming the API returns an array of objects with a 'name' field.
+    } else {
+      throw Exception('Failed to load package types');
+    }
+  } catch (e) {
+    throw Exception('Error fetching package types: $e');
+  }
+}
 
 }

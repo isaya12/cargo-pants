@@ -1,297 +1,235 @@
-import 'package:cargo_pants/screens/package/package.dart';
-import 'package:cargo_pants/screens/package/packagedetails/package_details.dart';
-import 'package:cargo_pants/screens/profile/profile.dart';
-// import 'package:cargo_pants/screens/package/package_screen.dart';  // Example import for PackageScreen
-// import 'package:cargo_pants/screens/message_screen.dart';  // Example import for MessageScreen
-// import 'package:cargo_pants/screens/profile_screen.dart';  // Example import for ProfileScreen
+import 'package:cargo_pants/data/controller/usercontroller.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:iconsax/iconsax.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;  // Track selected bottom navigation index
-
-  final List<Widget> _pages = [
-    const HomePage(),  // Home Screen
-     PackageScreen(),  // Package Screen
-    const ProfileScreen(),  // Profile Screen
-  ];
-
+class HomePage extends StatelessWidget {
+  //  late final String branchImageUrl;
   @override
   Widget build(BuildContext context) {
+    final  userController = Get.put(UserController());
+    final String imageName = GetStorage().read('branchImage') ?? '';
+    // Full image URL construction
+    final String branchImageUrl = imageName.isNotEmpty
+        ? 'https://kago.akilikubwadigital.com/images/$imageName'
+        : '';
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-      automaticallyImplyLeading: false,
-        title: const Text(
-          'Kagopoint',
-          style: TextStyle(color: EColors.white, fontSize: ESizes.fontSizeLg),
-        ),
         backgroundColor: EColors.primary,
         elevation: 0,
+        title: const Text(
+          'Kagopoint',
+          style: TextStyle(fontSize: ESizes.fontSizeLg, color: Colors.white),
+        ),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Top Section
-            Container(
-              color: EColors.primary,
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Location',
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'Mwananyamla, Dar es Salaam',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: ESizes.fontSizeSm),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      hintText: 'Tracking by Receipt',
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                     Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+  'Dashboard',
+  style: TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold, // Correct property
+  ),
+),
+
+                      branchImageUrl.isNotEmpty
+                              ? Container(
+                    width: 600, // Fixed width
+                    height: 100, // Fixed height
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8), // Optional: Rounded corners
+                      image: DecorationImage(
+                        image: NetworkImage(branchImageUrl),
+                        fit: BoxFit.cover, // Ensures the image fills the container
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Button Row
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  buildIconButton('Pick Up', Iconsax.box),
-                  buildIconButton('Package Claim', Icons.assignment),
-                  buildIconButton('Check Rates', Icons.monetization_on),
-                  buildIconButton('Drop Off', Iconsax.location),
-                ],
-              ),
-            ),
-
-            // Current Shipping Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Current Shipping',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          'Transit',
-                          style: TextStyle(color: EColors.secondary),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    const Text('Cargo Ship - Receipt: #AS213DX670'),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        buildShippingStatus('Picked', true),
-                        buildShippingStatus('Settled', true),
-                        buildShippingStatus('Delivery', true),
-                        buildShippingStatus('Sent', false),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('12 Dec 2024 - Jakarta, IDN'),
-                        // Text('24 Jan 2025 - Dallas, USA'),
-                      ],
+                  )
+                              : Container(
+                                  width: 100,
+                                  height: 100,
+                                  color: Colors.grey[300],
+                                  child: const Icon(Icons.image, size: 50),
+                                ),
+                          // SizedBox(height: 8),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-
-            // Recent Delivery Section
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Recent Delivery',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        'See All ',
-                        style: TextStyle(color: EColors.black),
-                      ),
-                    ],
+                  SectionCard(
+                    title: "20",
+                    subtitle: "incoming parcels",
+                    icon: Iconsax.box,
                   ),
-                  const SizedBox(height: 16),
-                  buildRecentDeliveryItem(
-                      'Logitech Peripheral', '#AA5D9A879', 'In Delivery'),
-                  buildRecentDeliveryItem(
-                      'Apple Watch Imported', '#SFAS3212DC', 'Done'),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  SectionCard(
+                    title: "38",
+                    subtitle: "Outgoing parcels",
+                    icon: Iconsax.box, // Pass the icon here
+                  ),
                 ],
               ),
-            ),
-          ],
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SectionCard(
+                    title: "Received parcel",
+                    subtitle: "100",
+                    icon: Iconsax.box,
+                  ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  SectionCard(
+                    subtitle: "400",
+                    title: " sent parcel",
+                    icon: Iconsax.box,
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              ReferralCard(),
+            ],
+          ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: EColors.secondary,
-        unselectedItemColor: Colors.grey,
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;  // Update currentIndex when a tab is selected
-          });
-          // Navigate to the respective screen based on the selected index
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
-          );
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Iconsax.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Iconsax.box),
-            label: 'Parcels',
-          ),
-          
-          BottomNavigationBarItem(
-            icon: Icon(Iconsax.user),
-            label: 'Profile',
-          ),
-        ],
-      ),
     );
   }
+}
 
-  Widget buildIconButton(String label, IconData icon) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 30,
-          backgroundColor: EColors.secondary,
-          child: Icon(icon, color: EColors.white, size: 30),
-        ),
-        const SizedBox(height: 8),
-        Text(label, style: const TextStyle(fontSize: 12)),
-      ],
-    );
-  }
+class WalletCard extends StatelessWidget {
+  WalletCard();
 
-  Widget buildShippingStatus(String label, bool isActive) {
-    return Expanded(
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 12,
-            backgroundColor: isActive ? EColors.secondary : Colors.grey[300],
-          ),
-          const SizedBox(height: 4),
-          Text(label,
-              style: TextStyle(
-                  fontSize: 12,
-                  color: isActive ? EColors.secondary : Colors.grey[600])),
-        ],
-      ),
-    );
-  }
-
-  Widget buildRecentDeliveryItem(String title, String receipt, String status) {
-    Color statusColor;
-    switch (status) {
-      case 'In Delivery':
-        statusColor = EColors.secondary;
-        break;
-      case 'Done':
-        statusColor = EColors.secondary;
-        break;
-      default:
-        statusColor = Colors.grey;
-    }
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
+        color: EColors.primary,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Wallet',
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
+          SizedBox(height: 8),
+          Obx(() => Text(
+                '1224',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold),
+              )),
+          SizedBox(height: 4),
+          Obx(() => Text(
+                'Account ',
+                style: TextStyle(color: Colors.grey),
+              )),
+        ],
+      ),
+    );
+  }
+}
+
+class SectionCard extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Widget? child;
+
+  SectionCard({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: EColors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: EColors.primary, size: 28),
+              SizedBox(height: 8),
+              Text(
+                title,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              if (subtitle.isNotEmpty)
+                Text(
+                  subtitle,
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                ),
+              if (child != null) child!,
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ReferralCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: EColors.secondary,
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-           const Icon(
-          Iconsax.box,  // You can choose any icon from available ones
-          color: EColors.primary,
-          size: 30,
-        ),
-        const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
-                  style:
-                      const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  'Kago pont',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 8),
                 Text(
-                  'Receipt: $receipt',
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  'simplfy the transportation process',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
                 ),
               ],
             ),
-          ),
-          TextButton(
-            onPressed: () {},
-            style: TextButton.styleFrom(
-              foregroundColor: statusColor,
-              padding: EdgeInsets.zero,
-              minimumSize: const Size(50, 20),
-              textStyle: const TextStyle(fontSize: 12),
-            ),
-            child: Text(status),
           ),
         ],
       ),

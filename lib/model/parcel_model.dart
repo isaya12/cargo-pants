@@ -33,6 +33,8 @@ class Parcel {
   String fromRegion;
   String toRegion;
   String thumbnail;
+  String bid;
+  String branchimage;
 
   Parcel({
     required this.id,
@@ -69,6 +71,8 @@ class Parcel {
     required this.fromRegion,
     required this.toRegion,
     required this.thumbnail,
+    required this.bid,
+    required this.branchimage,
   });
 
   // Convert Parcel object to JSON for API requests
@@ -133,6 +137,8 @@ class Parcel {
     fromRegion: json['from_region'] ?? '',
     toRegion: json['to_region'] ?? '',
     thumbnail: json['thumbnail'] ?? '',
+    bid: json['bid'] ?? '',
+    branchimage: json['branch_image'] ?? '',
   );
 }
 

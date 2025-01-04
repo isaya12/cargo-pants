@@ -21,7 +21,7 @@ class ProfileScreen extends StatelessWidget {
         foregroundColor: EColors.white,
         backgroundColor: EColors.primary,
         leading: IconButton(
-            onPressed: () => Get.to(() => const HomePage()),
+            onPressed: () => Get.back(),
             icon: const Icon(Icons.arrow_back_ios)),
       ),
       body: SingleChildScrollView(

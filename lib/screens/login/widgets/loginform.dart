@@ -1,4 +1,4 @@
-import 'package:cargo_pants/screens/home/home.dart';
+import 'package:cargo_pants/screens/navigation/navigation_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -45,7 +45,7 @@ class ELoginForm extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () => Get.to(() => const HomePage()),
+              onPressed: () => Get.to(() => const NavigationMenu()),
               style: ElevatedButton.styleFrom(
                 backgroundColor: EColors.secondary,
                 foregroundColor:EColors.white,

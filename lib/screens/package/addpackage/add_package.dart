@@ -1,3 +1,4 @@
+import 'package:cargo_pants/model/parcel_model.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
 import 'package:cargo_pants/data/controller/parcelcontroller.dart';
@@ -9,16 +10,22 @@ import 'package:iconsax/iconsax.dart';
 class AddPackageScreen extends StatelessWidget {
   AddPackageScreen({super.key});
 
-  ParcelController controller = Get.put(ParcelController());
+  final ParcelController controller = Get.put(ParcelController());
   final _formKey = GlobalKey<FormState>();
+
   // List of dropdown items
-  final List<ParcelSizes> _parcelSizes = ParcelSizes.values;
+  final List<ParcelSizes> parcelSizes = ParcelSizes.values;
 
   // ValueNotifier to manage the selected value
   final ValueNotifier<ParcelSizes?> _selectedParcelSize =
       ValueNotifier<ParcelSizes?>(null);
 
-      
+  //  final Future<List<String>> packageTypesFuture = fetchPackageTypes();
+
+  // To hold the fetched package types
+  var selectedPackageType = RxString('');
+
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -150,42 +157,50 @@ class AddPackageScreen extends StatelessWidget {
                       return null;
                     },
                   ),
-//                  ValueListenableBuilder<ParcelSizes?>(
-//   // valueListenable: controller.packageSize, // Use the controller's property
-//   builder: (context, value, _) {
-//     return DropdownButtonFormField<ParcelSizes>(
-//       decoration: InputDecoration(
-//         labelText: 'Parcel Size',
-//         border: OutlineInputBorder(
-//           borderRadius: BorderRadius.circular(10),
-//         ),
-//       ),
-//       value: value,
-//       items: _parcelSizes.map((ParcelSizes size) {
-//         return DropdownMenuItem<ParcelSizes>(
-//           value: size,
-//           child: Text(size.toString().split('.').last), // Display enum value
-//         );
-//       }).toList(),
-//       onChanged: (ParcelSizes? newValue) {
-//         controller.updateParcelSize(newValue); // Update the controller's property
-//       },
-//     );
-//   },
-// ),
-),
-                const SizedBox(height: 16),
-                _buildTextField(
-                  controller: controller.packageTypeController,
-                  labelText: 'Package Type',
-                  prefixIcon: Iconsax.category,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Sender name cannot be empty';
-                    }
-                    return null;
-                  },
                 ),
+                const SizedBox(height: 16),
+                //   Obx(() {
+                //   return FutureBuilder<List<String>>(
+                //     future: _packageTypesFuture,
+                //     builder: (context, snapshot) {
+                //       if (snapshot.connectionState == ConnectionState.waiting) {
+                //         return const CircularProgressIndicator();
+                //       } else if (snapshot.hasError) {
+                //         return Text('Error: ${snapshot.error}');
+                //       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                //         return const Text('No package types available');
+                //       } else {
+                //         List<String> packageTypes = snapshot.data!;
+                //         return DropdownButtonFormField<String>(
+                //           value: selectedPackageType.value.isNotEmpty
+                //               ? selectedPackageType.value
+                //               : null,
+                //           items: packageTypes
+                //               .map(
+                //                 (type) => DropdownMenuItem(
+                //                   value: type,
+                //                   child: Text(type),
+                //                 ),
+                //               )
+                //               .toList(),
+                //           onChanged: (newValue) {
+                //             selectedPackageType.value = newValue!;
+                //           },
+                //           decoration: const InputDecoration(
+                //             labelText: 'Package Type',
+                //             prefixIcon: Icon(Iconsax.box),
+                //           ),
+                //           validator: (value) {
+                //             if (value == null || value.isEmpty) {
+                //               return 'Please select a package type';
+                //             }
+                //             return null;
+                //           },
+                //         );
+                //       }
+                //     },
+                //   );
+                // }),
                 const SizedBox(height: 16),
                 _buildTextField(
                   controller: controller.parcelValueController,
