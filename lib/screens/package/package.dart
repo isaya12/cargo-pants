@@ -222,7 +222,7 @@ class PackageScreen extends StatelessWidget {
     final String formattedDate = DateFormat('d, MMM yyyy').format(parsedDate);
      String locationInfo = isIncoming.value ? parcel.branchCreated : parcel.destination;
     return GestureDetector(
-      onTap: () => Get.to(() => PackageDetailsScreen(parcel: parcel, id:parcel.id ,)),
+      onTap: () => Get.to(() => PackageDetailsScreen(parcel: parcel, id:parcel.id,)),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
         padding: const EdgeInsets.all(12),

@@ -1,3 +1,4 @@
+import 'package:cargo_pants/data/controller/parcelcontroller.dart';
 import 'package:cargo_pants/data/controller/usercontroller.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
@@ -10,12 +11,16 @@ class HomePage extends StatelessWidget {
   //  late final String branchImageUrl;
   @override
   Widget build(BuildContext context) {
-    final  userController = Get.put(UserController());
+    final userController = Get.put(UserController());
     final String imageName = GetStorage().read('branchImage') ?? '';
     // Full image URL construction
     final String branchImageUrl = imageName.isNotEmpty
         ? 'https://kago.akilikubwadigital.com/images/$imageName'
         : '';
+
+    final parcelController = Get.put(ParcelController());
+    parcelController.fetchDashboardData();
+    final data = parcelController.dashboardData;
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -36,30 +41,32 @@ class HomePage extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   children: [
-                     Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-  'Dashboard',
-  style: TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.bold, // Correct property
-  ),
-),
+                          const Text(
+                            'Dashboard',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold, // Correct property
+                            ),
+                          ),
 
-                      branchImageUrl.isNotEmpty
+                          branchImageUrl.isNotEmpty
                               ? Container(
-                    width: 600, // Fixed width
-                    height: 100, // Fixed height
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8), // Optional: Rounded corners
-                      image: DecorationImage(
-                        image: NetworkImage(branchImageUrl),
-                        fit: BoxFit.cover, // Ensures the image fills the container
-                      ),
-                    ),
-                  )
+                                  width: 600, // Fixed width
+                                  height: 100, // Fixed height
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                        8), // Optional: Rounded corners
+                                    image: DecorationImage(
+                                      image: NetworkImage(branchImageUrl),
+                                      fit: BoxFit
+                                          .cover, // Ensures the image fills the container
+                                    ),
+                                  ),
+                                )
                               : Container(
                                   width: 100,
                                   height: 100,
@@ -74,19 +81,47 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: EColors.secondary,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Kago point',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            "The data represented here is the report of mothly Incoming Parcel,Outgoing parcels,Received parcel, sent parcel.",
+                            style: TextStyle(color: Colors.grey, fontSize: 13),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SectionCard(
-                    title: "20",
-                    subtitle: "incoming parcels",
+                    title: "${data['incoming'] ?? 0}",
+                    subtitle: "Incoming Parcel",
                     icon: Iconsax.box,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 15,
                   ),
                   SectionCard(
-                    title: "38",
+                    title: "${data['outgoing'] ?? 0}",
                     subtitle: "Outgoing parcels",
                     icon: Iconsax.box, // Pass the icon here
                   ),
@@ -98,21 +133,21 @@ class HomePage extends StatelessWidget {
                 children: [
                   SectionCard(
                     title: "Received parcel",
-                    subtitle: "100",
+                    subtitle: "${data['received_30'] ?? 0}",
                     icon: Iconsax.box,
                   ),
                   SizedBox(
                     width: 15,
                   ),
                   SectionCard(
-                    subtitle: "400",
+                    subtitle: "${data['sent_30'] ?? 0}",
                     title: " sent parcel",
                     icon: Iconsax.box,
                   ),
                 ],
               ),
               SizedBox(height: 16),
-              ReferralCard(),
+              // ReferralCard(),
             ],
           ),
         ),
@@ -135,7 +170,7 @@ class WalletCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Wallet',
             style: TextStyle(color: Colors.white, fontSize: 16),
           ),
@@ -177,61 +212,28 @@ class SectionCard extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: EColors.white,
+          color: EColors.primary,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, color: EColors.primary, size: 28),
+              Icon(icon, color: EColors.white, size: 28),
               SizedBox(height: 8),
               Text(
                 title,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16,color:Colors.white, fontWeight: FontWeight.bold),
               ),
               if (subtitle.isNotEmpty)
                 Text(
                   subtitle,
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                  style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
               if (child != null) child!,
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class ReferralCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: EColors.secondary,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Kago pont',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'simplfy the transportation process',
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

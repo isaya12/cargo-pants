@@ -7,8 +7,6 @@ class Parcel {
   String ariveat;
   String bbtoname;
   String bbfromname;
-  String bbtoregion;
-  String bbfromregion;
   String bbfromcontact;
   String bbtocontact;
   String codedata;
@@ -32,9 +30,12 @@ class Parcel {
   String closedDescription;
   String fromRegion;
   String toRegion;
-  String thumbnail;
-  String bid;
+  // String bid;
   String branchimage;
+  // int incomingParcel;
+  // int outgoing;
+  // int received_30;
+  // int sent_30;
 
   Parcel({
     required this.id,
@@ -44,8 +45,6 @@ class Parcel {
     required this.ariveat,
     required this.bbtoname,
     required this.bbfromname,
-    required this.bbtoregion,
-    required this.bbfromregion,
     required this.bbfromcontact,
     required this.bbtocontact,
     required this.codedata,
@@ -70,9 +69,12 @@ class Parcel {
     required this.closedDescription,
     required this.fromRegion,
     required this.toRegion,
-    required this.thumbnail,
-    required this.bid,
+    // required this.bid,
     required this.branchimage,
+    // required this.incomingParcel,
+    // required this.outgoing,
+    // required this.received_30,
+    // required this.sent_30,
   });
 
   // Convert Parcel object to JSON for API requests
@@ -104,14 +106,12 @@ class Parcel {
   factory Parcel.fromJson(Map<String, dynamic> json) {
   return Parcel(
     id: json['id'] ?? 0, // Default to 0 for IDs
-    fullName: json['fullName'] ?? '',
+    fullName: json['fulname'] ?? '',
     phone1: json['phone1'] ?? '',
     shippingat: json['shipping_at'] ?? '',
     ariveat: json['arive_at'] ?? '',
     bbtoname: json['bb_to_name'] ?? '',
     bbfromname: json['bb_from_name'] ?? '',
-    bbtoregion: json['bb_to_region'] ?? '',
-    bbfromregion: json['bb_from_region'] ?? '',
     bbfromcontact: json['bb_from_contact'] ?? '',
     bbtocontact: json['bb_to_contact'] ?? '',
     codedata: json['code_data'] ?? '',
@@ -136,9 +136,12 @@ class Parcel {
     closedDescription: json['closed_description'] ?? '',
     fromRegion: json['from_region'] ?? '',
     toRegion: json['to_region'] ?? '',
-    thumbnail: json['thumbnail'] ?? '',
-    bid: json['bid'] ?? '',
+    // bid: json['bid'] ?? '',
     branchimage: json['branch_image'] ?? '',
+    // incomingParcel: json['incoming'] ?? '',
+    // outgoing: json['outgoing'] ?? '',
+    // received_30: json['received_30'] ?? '',
+    // sent_30: json['sent_30'] ?? '',
   );
 }
 

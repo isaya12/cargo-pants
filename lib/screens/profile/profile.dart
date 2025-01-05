@@ -2,6 +2,7 @@ import 'package:cargo_pants/data/controller/usercontroller.dart';
 import 'package:cargo_pants/screens/home/home.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
+import 'package:cargo_pants/screens/profile/update_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -11,6 +12,21 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final UserController userController = Get.find();
+
+    // Retrieve the stored user data
+    final String fullName =
+        userController.storage.read('fullName') ?? 'Unknown';
+    final String branchname =
+        userController.storage.read('branch_name') ?? 'Unknown';
+    final String phone = userController.storage.read('phone') ?? 'Unknown';
+    final String companyname =
+        userController.storage.read('company_name') ?? 'Unknown';
+    final String savebrachRegion =
+        userController.storage.read('branch_region') ?? 'Unknown';
+    final String avatar =
+        userController.storage.read('avatar') ?? 'assets/profile/user.jpg';
+
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -28,12 +44,11 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           children: [
             // Header with background and avatar
-            // Padding(
-            // padding: const EdgeInsets.all(8.0),
             Stack(
               children: [
+                // Background container that stays behind the avatar
                 Container(
-                  height: 70,
+                  height: 150,
                   decoration: const BoxDecoration(
                     color: EColors.primary,
                     borderRadius: BorderRadius.vertical(
@@ -41,162 +56,63 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                // Positioned Avatar on top of the background
                 Positioned(
-                  top: 10,
+                  top: 60, // Adjust the top value to position it properly
                   left: MediaQuery.of(context).size.width / 2 - 50,
-                  child: const CircleAvatar(
+                  child: CircleAvatar(
                     radius: 50,
-                    backgroundImage: AssetImage(
-                      'assets/profile/user.jpg', // Replace with profile image URL
+                    backgroundImage: NetworkImage(
+                      'https://kago.akilikubwadigital.com/images/${userController.storage.read('avatar') ?? 'user.jpg'}',
                     ),
                   ),
                 ),
               ],
-            ),
-            // ),
-
-            const SizedBox(height: 60),
-
-            // Profile Info
-            const Center(
-              child: Column(
-                children: [
-                  Text(
-                    'Arnoldy Chafe',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    '@Arnoldy',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Bandung | Joined March 2023',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: EColors.secondary,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    child: Text(
-                      'CEO System D, Because your satisfaction is everything & Standing out from the rest, and that\'s what we want you to be as well.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Action Buttons
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  OutlinedButton(
-                    onPressed: () {},
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    child: const Text(
-                      'Update',
-                      style: TextStyle(color: EColors.black),
-                    ),
-                  ),
-                  Container(
-                    width: 1, // Thickness of the line
-                    height: 30, // Height of the line
-                    color: Colors.grey[400], // Color of the line
-                  ),
-                  const Column(
-                    children: [
-                      Text(
-                        'Parcel by me',
-                        style: TextStyle(color: EColors.black),
-                      ),
-                      Text('30')
-                    ],
-                  ),
-                  Container(
-                    width: 1, // Thickness of the line
-                    height: 30, // Height of the line
-                    color: Colors.grey[400], // Color of the line
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.more_horiz),
-                  ),
-                ],
-              ),
             ),
 
             // Information Section
             Padding(
               padding: const EdgeInsets.all(16),
               child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[100], // Updated background color
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(
-                          0.5), // Adjusted shadow color and transparency
-                      spreadRadius: 1,
-                      blurRadius: 5,
-                      offset: const Offset(2, 4), // Position of the shadow
-                    ),
-                  ],
-                ),
-                child: Card(
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Information',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Personal Information',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                        const SizedBox(height: 16),
-                        const InfoRow(
-                          icon: Iconsax.user,
-                          label: 'Full Name',
-                          value: 'fred john akilikubwa',
-                        ),
-                        const InfoRow(
-                          icon: Iconsax.message,
-                          label: 'Email',
-                          value: 'Hello@adalahreza.com',
-                        ),
-                        const InfoRow(
-                          icon: Iconsax.call,
-                          label: 'Phone',
-                          value: '+62 517 218 92 00',
-                        ),
-                        const InfoRow(
-                          icon: Iconsax.calendar,
-                          label: 'Joined',
-                          value: '26 March, 2023',
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 16),
+                      InfoRow(
+                        icon: Iconsax.user,
+                        label: 'Full Name',
+                        value: fullName,
+                      ),
+                      InfoRow(
+                        icon: Iconsax.tree,
+                        label: 'Branch Name',
+                        value: branchname,
+                      ),
+                      InfoRow(
+                        icon: Iconsax.call,
+                        label: 'Phone',
+                        value: phone,
+                      ),
+                      InfoRow(
+                        icon: Iconsax.calendar,
+                        label: 'Branch Region',
+                        value: savebrachRegion,
+                      ),
+                      InfoRow(
+                        icon: Iconsax.calendar,
+                        label: 'Company Name',
+                        value: companyname,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -204,18 +120,63 @@ class ProfileScreen extends StatelessWidget {
 
             // Tags Section
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: OutlinedButton(
-                onPressed: () async {
-                  UserController userController = Get.put(UserController());
-                  await userController.logout(); // Call the logout function
-                },
-                child: const Text(
-                  'Logout',
-                  style: TextStyle(
-                    color: Colors.red,
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Column(
+                children: [
+                  // Update Password Row
+                  GestureDetector(
+                    onTap: () => Get.to(() => PersonalInformationScreen()),
+                    child: const Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(Icons.lock_reset),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'Update Password',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 20),
+
+                  // Logout Row
+                  GestureDetector(
+                    onTap: () async {
+                      UserController userController = Get.put(UserController());
+                      await userController.logout();
+                    },
+                    child: const Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.logout,
+                          color: Colors.red,
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Logout',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -224,6 +185,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
+
 
 // Reusable Widget for Info Rows
 class InfoRow extends StatelessWidget {
@@ -251,12 +213,9 @@ class InfoRow extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           const Spacer(),
-          Text(value, style: const TextStyle(color: Colors.black54)),
+          Text(value, style: TextStyle(color: Colors.black54)),
         ],
       ),
     );
   }
 }
-
-// Reusable Widget for Tags
-

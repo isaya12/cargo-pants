@@ -1,4 +1,3 @@
-import 'package:cargo_pants/model/parcel_model.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
 import 'package:cargo_pants/data/controller/parcelcontroller.dart';
@@ -25,10 +24,10 @@ class AddPackageScreen extends StatelessWidget {
   // To hold the fetched package types
   var selectedPackageType = RxString('');
 
- 
-
   @override
   Widget build(BuildContext context) {
+    ParcelController parcelController = Get.put(ParcelController());
+    var packages = parcelController.parcelTypes.value;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -159,48 +158,44 @@ class AddPackageScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                //   Obx(() {
-                //   return FutureBuilder<List<String>>(
-                //     future: _packageTypesFuture,
-                //     builder: (context, snapshot) {
-                //       if (snapshot.connectionState == ConnectionState.waiting) {
-                //         return const CircularProgressIndicator();
-                //       } else if (snapshot.hasError) {
-                //         return Text('Error: ${snapshot.error}');
-                //       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                //         return const Text('No package types available');
-                //       } else {
-                //         List<String> packageTypes = snapshot.data!;
-                //         return DropdownButtonFormField<String>(
-                //           value: selectedPackageType.value.isNotEmpty
-                //               ? selectedPackageType.value
-                //               : null,
-                //           items: packageTypes
-                //               .map(
-                //                 (type) => DropdownMenuItem(
-                //                   value: type,
-                //                   child: Text(type),
-                //                 ),
-                //               )
-                //               .toList(),
-                //           onChanged: (newValue) {
-                //             selectedPackageType.value = newValue!;
-                //           },
-                //           decoration: const InputDecoration(
-                //             labelText: 'Package Type',
-                //             prefixIcon: Icon(Iconsax.box),
-                //           ),
-                //           validator: (value) {
-                //             if (value == null || value.isEmpty) {
-                //               return 'Please select a package type';
-                //             }
-                //             return null;
-                //           },
-                //         );
-                //       }
-                //     },
-                //   );
-                // }),
+              Obx(() {
+  if (parcelController.isPTLoading.value) {
+    // Show loading indicator
+    return const CircularProgressIndicator();
+  } else if (parcelController.parcelTypes.isEmpty) {
+    // Handle empty data case
+    return const Text('No package types available');
+  } else {
+    // Render DropdownButtonFormField
+    return DropdownButtonFormField<String>(
+      value: selectedPackageType.value.isNotEmpty
+          ? selectedPackageType.value
+          : null, // Use the selected package type for the initial value
+      items: parcelController.parcelTypes
+          .map(
+            (type) => DropdownMenuItem<String>(
+              value: type.name, // Assuming 'name' is the property in ParcelType
+              child: Text(type.name),
+            ),
+          )
+          .toList(),
+      onChanged: (newValue) {
+        selectedPackageType.value = newValue!;
+      },
+      decoration: const InputDecoration(
+        labelText: 'Package Type',
+        prefixIcon: Icon(Iconsax.box),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please select a package type';
+        }
+        return null;
+      },
+    );
+  }
+}),
+
                 const SizedBox(height: 16),
                 _buildTextField(
                   controller: controller.parcelValueController,
