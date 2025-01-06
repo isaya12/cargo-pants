@@ -21,13 +21,15 @@ class HomePage extends StatelessWidget {
     final parcelController = Get.put(ParcelController());
     parcelController.fetchDashboardData();
     final data = parcelController.dashboardData;
+    final String companyname =
+        userController.storage.read('company_name') ?? 'Unknown';
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         backgroundColor: EColors.primary,
         elevation: 0,
-        title: const Text(
-          'Kagopoint',
+        title:  Text(
+          companyname,
           style: TextStyle(fontSize: ESizes.fontSizeLg, color: Colors.white),
         ),
       ),
@@ -87,18 +89,18 @@ class HomePage extends StatelessWidget {
                   color: EColors.secondary,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Row(
+                child:  Row(
                   children: [
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Kago point',
+                            companyname,
                             style: TextStyle(color: Colors.white, fontSize: 16),
                           ),
                           SizedBox(height: 8),
-                          Text(
+                          const Text(
                             "The data represented here is the report of mothly Incoming Parcel,Outgoing parcels,Received parcel, sent parcel.",
                             style: TextStyle(color: Colors.grey, fontSize: 13),
                           ),

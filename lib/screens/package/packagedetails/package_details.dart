@@ -1,11 +1,14 @@
 import 'dart:convert';
 
 import 'package:cargo_pants/data/controller/parcelcontroller.dart';
+import 'package:cargo_pants/data/controller/usercontroller.dart';
 import 'package:flutter/material.dart';
 import 'package:cargo_pants/model/parcel_model.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
+import 'package:cargo_pants/screens/package/updateparcel/update_parcel.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart' as pw;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -59,77 +62,105 @@ class PackageDetailsScreen extends StatelessWidget {
     );
   }
 
-  // Function to build a summary card for parcel details
-  Widget buildSummaryCard(Parcel parcel) {
-    final details = {
-      // "Sender Name:": parcel.bid,
-      "Sender Name:": parcel.senderName,
-      "Sender Phone:": parcel.senderPhone,
-      "Receiver Name:": parcel.receiverName,
-      "Receiver Phone:": parcel.receiverPhone,
-      "Transporter Name:": parcel.transporterName,
-      "Transporter Phone:": parcel.transporterPhone,
-      "Package Name:": parcel.packageName,
-      "Package Size:": parcel.packageSize,
-      "Package Type:": parcel.packageType,
-      "Package Value:": parcel.parcelValue,
-      "Package Weight:": "${parcel.parcelWeight} kg",
-      "Destination:": parcel.destination,
-      "Transportation Price:": "Tsh ${parcel.transportationPrice}",
-      "Specific Location:": parcel.specifyLocation,
-      "Description:": parcel.description,
-      "Branch Created:": parcel.branchCreated,
-    };
+ // Function to build a summary card for parcel details
+Widget buildSummaryCard(Parcel parcel) {
+  final details = {
+    "Sender Name:": parcel.senderName,
+    "Sender Phone:": parcel.senderPhone,
+    "Receiver Name:": parcel.receiverName,
+    "Receiver Phone:": parcel.receiverPhone,
+    "Transporter Name:": parcel.transporterName,
+    "Transporter Phone:": parcel.transporterPhone,
+    "Package Name:": parcel.packageName,
+    "Package Size:": parcel.packageSize,
+    "Package Type:": parcel.packageType,
+    "Package Value:": parcel.parcelValue,
+    "Package Weight:": "${parcel.parcelWeight} kg",
+    "Destination:": parcel.destination,
+    "Transportation Price:": "Tsh ${parcel.transportationPrice}",
+    "Specific Location:": parcel.specifyLocation,
+    "Description:": parcel.description,
+    "Branch Created:": parcel.branchCreated,
+  };
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade200,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: details.entries.map((entry) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Text(
-                    entry.key,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 4,
-                  child: Align(
-                    alignment: Alignment.centerRight,
+  final showDivider = {
+    "Sender Name:": false,
+    "Sender Phone:": false,
+    "Receiver Name:": false,
+    "Receiver Phone:": false,
+    "Transporter Name:": false, // No divider below Transporter Name
+    "Transporter Phone:": true,
+    "Package Name:": false,
+    "Package Size:": false,
+    "Package Type:": false,
+    "Package Value:": false,
+    "Package Weight:": false,
+    "Destination:": true,
+    "Transportation Price:": false,
+    "Specific Location:": false, // No divider below Specific Location
+    "Description:": false, // No divider below Description
+    "Branch Created:": true,
+  };
+
+  return Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.shade200,
+          blurRadius: 4,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: details.entries.map((entry) {
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 3,
                     child: Text(
-                      entry.value,
-                      style: const TextStyle(fontSize: 14),
-                      textAlign: TextAlign.right,
+                      entry.key,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  Expanded(
+                    flex: 4,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        entry.value,
+                        style: const TextStyle(fontSize: 14),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          );
-        }).toList(),
-      ),
-    );
-  }
+            // Add Divider if showDivider for this key is true
+            if (showDivider[entry.key] == true)
+              Divider(
+                color: Colors.grey.shade300,
+                thickness: 1,
+              ),
+          ],
+        );
+      }).toList(),
+    ),
+  );
+}
 
   // Action buttons based on parcel status
   Widget buildActionButtons(BuildContext context) {
@@ -192,7 +223,7 @@ class PackageDetailsScreen extends StatelessWidget {
               if (parcel.branchCreated != parsedValue) ...[
                 // print('we ${parcel.bid}');
                 buildButton(context, "Update", Colors.orange, () {
-                  // Implement update logic
+                  Get.to(() => UpdateParcelScreen(parcel:parcel));
                 }),
                 buildButton(context, "Delete", Colors.red, () {
                   // Call showActionDialog with "delete" as the action type
@@ -338,10 +369,22 @@ class PackageDetailsScreen extends StatelessWidget {
         : null;
     print(' barcode : $barcodeImage');
     print('Agent Phone: ${parcel.phone1}');
+    final DateFormat dateFormat = DateFormat('d MMMM yyyy');
+
+// Format the dates
+    final DateTime shippingDate = DateTime.parse(parcel.shippingat);
+    final DateTime arrivalDate = DateTime.parse(parcel.ariveat);
+
+    final String formattedShippingDate = dateFormat.format(shippingDate);
+    final String formattedArrivalDate = dateFormat.format(arrivalDate);
+
     pdf.addPage(
       pw.Page(
         pageFormat: pw.PdfPageFormat.a4,
         build: (context) {
+          final UserController userController = Get.find();
+          final String companyname =
+              userController.storage.read('company_name') ?? 'Unknown';
           return pw.Align(
             alignment: pw.Alignment.center, // Center-align the entire content
             child: pw.Container(
@@ -353,7 +396,7 @@ class PackageDetailsScreen extends StatelessWidget {
                   pw.Align(
                     alignment: pw.Alignment.center,
                     child: pw.Text(
-                      "Kagopoint",
+                      companyname,
                       style: pw.TextStyle(
                         fontWeight: pw.FontWeight.bold,
                         fontSize: 30,
@@ -394,11 +437,11 @@ class PackageDetailsScreen extends StatelessWidget {
                     style: const pw.TextStyle(fontSize: 16),
                   ),
                   pw.Text(
-                    "Shipping date: ${parcel.shippingat}",
+                    "Shipping date: ${formattedShippingDate}",
                     style: const pw.TextStyle(fontSize: 16),
                   ),
                   pw.Text(
-                    "Arrival date: ${parcel.ariveat}",
+                    "Arrival date: ${formattedArrivalDate}",
                     style: const pw.TextStyle(fontSize: 16),
                   ),
                   pw.SizedBox(height: 10),
@@ -467,11 +510,11 @@ class PackageDetailsScreen extends StatelessWidget {
                     "Agent Phone: ${parcel.phone1}",
                     style: pw.TextStyle(fontSize: 16),
                   ),
-                   pw.Text(
-                    "${parcel.fromRegion} : ${parcel.toRegion}",
+                  pw.Text(
+                    "${parcel.fromRegion} : ${parcel.bbfromcontact}",
                     style: pw.TextStyle(fontSize: 16),
                   ),
-                   pw.Text(
+                  pw.Text(
                     "${parcel.toRegion} :",
                     style: pw.TextStyle(fontSize: 16),
                   ),

@@ -30,6 +30,7 @@ class Parcel {
   String closedDescription;
   String fromRegion;
   String toRegion;
+   int? branchTo;
   // String bid;
   String branchimage;
   // int incomingParcel;
@@ -71,6 +72,7 @@ class Parcel {
     required this.toRegion,
     // required this.bid,
     required this.branchimage,
+    // required this.branchTo,
     // required this.incomingParcel,
     // required this.outgoing,
     // required this.received_30,
@@ -80,15 +82,14 @@ class Parcel {
   // Convert Parcel object to JSON for API requests
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'sender_name': senderName,
       'sender_phone': senderPhone,
       'receiver_name': receiverName,
-      'barcode_id': barcodeId,
       'receiver_phone': receiverPhone,
       'transporter_name': transporterName,
       'transpoerter_phone': transporterPhone,
       'name': packageName,
+      'branch_to': branchTo,
       'package_size': packageSize,
       'package_tag': packageType,
       'package_value': parcelValue,
@@ -97,8 +98,6 @@ class Parcel {
       'price': transportationPrice,
       'specific_location': specifyLocation,
       'description': description,
-      'closed_description': closedDescription,
-    
     };
   }
 
@@ -138,10 +137,7 @@ class Parcel {
     toRegion: json['to_region'] ?? '',
     // bid: json['bid'] ?? '',
     branchimage: json['branch_image'] ?? '',
-    // incomingParcel: json['incoming'] ?? '',
-    // outgoing: json['outgoing'] ?? '',
-    // received_30: json['received_30'] ?? '',
-    // sent_30: json['sent_30'] ?? '',
+    // branchTo: json['branch_to'] ?? '',
   );
 }
 

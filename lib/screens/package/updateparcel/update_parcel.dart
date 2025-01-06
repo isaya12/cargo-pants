@@ -1,3 +1,4 @@
+import 'package:cargo_pants/model/parcel_model.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
 import 'package:cargo_pants/data/controller/parcelcontroller.dart';
@@ -7,9 +8,31 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-class AddPackageScreen extends StatelessWidget {
-  AddPackageScreen({super.key});
+class UpdateParcelScreen extends StatelessWidget {
+  UpdateParcelScreen({required this.parcel}) {
+    // Initialize controllers with parcel data
+    controller.senderNameController.text = parcel.senderName;
+    controller.senderPhoneController.text = parcel.senderPhone;
+    controller.receiverNameController.text = parcel.receiverName;
+    controller.receiverPhoneController.text = parcel.receiverPhone;
+    controller.transporterNameController.text = parcel.transporterName;
+    controller.transporterPhoneController.text = parcel.transporterPhone;
+    controller.packageNameController.text = parcel.packageName;
+    controller.parcelValueController.text = parcel.parcelValue.toString();
+    controller.parcelWeightController.text = parcel.parcelWeight.toString();
+    controller.transportationPriceController.text =
+        parcel.transportationPrice.toString();
+    controller.specifyLocationController.text = parcel.specifyLocation ?? '';
+    controller.descriptionController.text = parcel.description ?? '';
+    controller.packageSize.value = ParcelSizes.values.firstWhere(
+      (e) => e.toString().split('.').last == parcel.packageSize,
+      orElse: () => ParcelSizes.small, // Default size if no match
+    );
+    selectedPackageType.value = parcel.packageType ?? '';
+    selectedBranch.value = parcel.branchTo?.toString() ?? '';
+  }
 
+  final Parcel parcel;
   final ParcelController controller = Get.put(ParcelController());
   final _formKey = GlobalKey<FormState>();
 
@@ -28,6 +51,7 @@ class AddPackageScreen extends StatelessWidget {
     ParcelController parcelController = Get.put(ParcelController());
     var packages = parcelController.parcelTypes.value;
     var parcelBr = parcelController.parcelBranch.value;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -38,7 +62,7 @@ class AddPackageScreen extends StatelessWidget {
         backgroundColor: EColors.primary,
         foregroundColor: EColors.white,
         title: const Text(
-          'Create Parcel',
+          'Update Parcel',
           style: TextStyle(fontSize: ESizes.fontSizeMd),
         ),
       ),
@@ -50,16 +74,15 @@ class AddPackageScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
+                const SizedBox(height: 5),
                 const Text(
-                  "Let's Create a new parcel",
+                  "Update the parcel information",
                   style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                     color: EColors.secondary,
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
                 _buildRow(
                   _buildTextField(
                     controller: controller.senderNameController,
@@ -243,7 +266,8 @@ class AddPackageScreen extends StatelessWidget {
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Map<String, dynamic> parcelData = {
+                        Map<String, dynamic> parcelsData = {
+                          "id": parcel.id,
                           "sender_name": controller.senderNameController.text,
                           "sender_phone": controller.senderPhoneController.text,
                           "receiver_name":
@@ -261,7 +285,8 @@ class AddPackageScreen extends StatelessWidget {
                                   .split('.')
                                   .last // Convert enum to string
                               : null, // Ensure this is correctly passed
-                          "package_value": controller.parcelValueController.text,
+                          "package_value":
+                              controller.parcelValueController.text,
                           "package_weight":
                               controller.parcelWeightController.text,
                           "price":
@@ -275,20 +300,24 @@ class AddPackageScreen extends StatelessWidget {
                               .value, // Use the selected branch directly
                         };
 
-                        ParcelController.createParcel(parcelData)
-                            .then((value) => Get.snackbar(
-                                  'Success',
-                                  'Parcel created successfully!',
-                                  snackPosition: SnackPosition.BOTTOM,
-                                ))
-                            .catchError((error) => Get.snackbar(
-                                  'Error',
-                                  error.toString(),
-                                  snackPosition: SnackPosition.BOTTOM,
-                                ));
+                        // Corrected updateParcel method call
+                        parcelController.updateParcel(parcelsData, parcel.id).then((value) {
+                          Get.snackbar(
+                            'Success',
+                            'Parcel updated successfully',
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: Colors.green,
+                            colorText: Colors.white,
+                          );
+                          Get.back(); // Navigate back
+                        });
                       }
                     },
-                    child: const Text('Create Parcel',style: TextStyle(color: Colors.white),),
+                    child: const Text(
+                      'Update Parcel',
+                      style: TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               ],
@@ -299,23 +328,11 @@ class AddPackageScreen extends StatelessWidget {
     );
   }
 
-  // Helper method to build a row of two widgets
-  Widget _buildRow(Widget firstChild, Widget secondChild) {
-    return Row(
-      children: [
-        Expanded(child: firstChild),
-        const SizedBox(width: 16),
-        Expanded(child: secondChild),
-      ],
-    );
-  }
-
-  // Helper method to build a text field
   Widget _buildTextField({
     required TextEditingController controller,
     required String labelText,
     required IconData prefixIcon,
-    required String? Function(String?)? validator,
+    required String? Function(String?) validator,
   }) {
     return TextFormField(
       controller: controller,
@@ -327,6 +344,16 @@ class AddPackageScreen extends StatelessWidget {
         ),
       ),
       validator: validator,
+    );
+  }
+
+  Widget _buildRow(Widget left, Widget right) {
+    return Row(
+      children: [
+        Expanded(child: left),
+        const SizedBox(width: 16),
+        Expanded(child: right),
+      ],
     );
   }
 }

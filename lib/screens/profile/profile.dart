@@ -1,5 +1,4 @@
 import 'package:cargo_pants/data/controller/usercontroller.dart';
-import 'package:cargo_pants/screens/home/home.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
 import 'package:cargo_pants/screens/profile/update_profile.dart';
@@ -103,12 +102,12 @@ class ProfileScreen extends StatelessWidget {
                         value: phone,
                       ),
                       InfoRow(
-                        icon: Iconsax.calendar,
+                        icon: Iconsax.trade,
                         label: 'Branch Region',
                         value: savebrachRegion,
                       ),
                       InfoRow(
-                        icon: Iconsax.calendar,
+                        icon: Iconsax.building,
                         label: 'Company Name',
                         value: companyname,
                       ),

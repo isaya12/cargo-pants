@@ -54,7 +54,7 @@ class PackageScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios),
         ),
         title: const Text(
-          'Kagopoint',
+          'Parcels',
           style: TextStyle(fontSize: ESizes.fontSizeLg),
         ),
         backgroundColor: EColors.primary,

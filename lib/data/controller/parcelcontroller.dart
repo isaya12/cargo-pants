@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:cargo_pants/model/parcel_model.dart';
 import 'package:cargo_pants/model/parcel_type_model.dart';
+import 'package:cargo_pants/screens/navigation/navigation_menu.dart';
+import 'package:cargo_pants/screens/package/packagedetails/package_details.dart';
 import 'package:cargo_pants/utils/constants/api_constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:cargo_pants/utils/constants/enums.dart';
+import 'package:cargo_pants/model/parcel_branches_model.dart';
 import 'package:flutter/material.dart';
 
 class ParcelController extends GetxController {
@@ -18,15 +21,15 @@ class ParcelController extends GetxController {
   final transporterNameController = TextEditingController();
   final transporterPhoneController = TextEditingController();
   final packageNameController = TextEditingController();
-  final packageSizeController = TextEditingController();
-  final packageTypeController = TextEditingController();
   final parcelValueController = TextEditingController();
   final parcelWeightController = TextEditingController();
-  final destinationController = TextEditingController();
   final transportationPriceController = TextEditingController();
   final specifyLocationController = TextEditingController();
   final descriptionController = TextEditingController();
-  final packageSize = Rx<ParcelSizes?>(null);
+  var packageSize = Rx<ParcelSizes?>(null); // Assuming this is your size enum
+  var parcelTypes = RxList<ParcelType>([]); // Your parcel types list
+  var parcelBranch = RxList<ParcelBranch>([]);
+
   // Method to update the selected parcel size
   void updateParcelSize(ParcelSizes? size) {
     packageSize.value = size;
@@ -37,20 +40,84 @@ class ParcelController extends GetxController {
   var selectedDestination = ''.obs;
   var parcelImage = ''.obs;
   var parcelPhone = ''.obs;
-  RxList<ParcelType> parcelTypes = <ParcelType>[].obs;
+  RxList<ParcelType> parcelType = <ParcelType>[].obs;
+  RxList<ParcelBranch> parcelBranchs = <ParcelBranch>[].obs;
   var isPTLoading = false.obs;
+  var isBRLoading = false.obs;
   var dashboardData = {}.obs; // Use a reactive map to store dashboard data
   var isDataLoaded = false.obs; // To track loading state
 
   @override
   void onInit() {
     super.onInit();
-    fetchPackageTypes(); // Ensure this is called here
+    fetchPackageTypes();
+    fetchDestination(); // Ensure this is called here
   }
+  
+   Future<void> updateParcel(Map<String, dynamic> parcelsData, int parcelId) async {
+  final url = Uri.parse('${APIConstants.baseUrl}/api/parcel/update');
+  final token = await GetStorage().read('token');
+
+  try {
+    print('Payload: ${jsonEncode(parcelsData)}');
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token, // Include the 'Bearer' token
+      },
+      body: jsonEncode(parcelsData),
+    );
+
+    if (response.statusCode == 200) {
+      print('Parcel update successfully: ${response.body}');
+
+      Get.snackbar(
+        'Success', 
+        'Parcel updated successfully!',
+        snackPosition: SnackPosition.BOTTOM,  // Position at the bottom
+        backgroundColor: Colors.green,  // Set background color for success
+        colorText: Colors.white,  // Text color
+        duration: Duration(seconds: 2),  // Duration for the SnackBar
+      );
+      final updatedParcel = await fetchParcelById(parcelId);
+
+      // Pass the updated parcel data to PackageDetailsScreen
+      Get.offAll(() => PackageDetailsScreen(id: parcelId, parcel: updatedParcel));
+
+    } else {
+      throw Exception('Failed to update parcel: ${response.body}');
+    }
+  } catch (e) {
+    print('Error updating parcel: $e');
+    rethrow;
+  }
+}
+
+// Method to fetch parcel by ID
+Future<Parcel> fetchParcelById(int parcelId) async {
+  final token = await GetStorage().read('token');
+  final response = await http.get(
+    Uri.parse('${APIConstants.baseUrl}/api/parcel/$parcelId'),
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token,
+    },
+  );
+
+  if (response.statusCode == 200) {
+    final Map<String, dynamic> data = jsonDecode(response.body);
+    return Parcel.fromJson(data['parcel']);
+  } else {
+    throw Exception('Failed to fetch parcel data');
+  }
+}
 
   static Future<void> createParcel(Map<String, dynamic> parcelData) async {
     final url = Uri.parse('${APIConstants.baseUrl}/api/parcel/create');
     final token = await GetStorage().read('token');
+
     try {
       print('Payload: ${jsonEncode(parcelData)}');
 
@@ -58,33 +125,57 @@ class ParcelController extends GetxController {
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token,
+          'Authorization': token, // Include the 'Bearer' token
         },
         body: jsonEncode(parcelData),
       );
       if (response.statusCode == 200) {
-        print('Parcel created successfully: ${response.body}');
+        // print('Parcel created successfully: ${response.body}');
+        Get.offAll(() => NavigationMenu());
       } else {
         throw Exception('Failed to create parcel: ${response.body}');
       }
     } catch (e) {
+      print('Error creating parcel: $e');
       rethrow;
     }
   }
 
 //  fetch destination
-  Future<void> fetchDestinations() async {
+  Future<void> fetchDestination() async {
+    final token = await GetStorage().read('token');
     try {
-      var response = await http
-          .get(Uri.parse('${APIConstants.baseUrl}/api/branch/other-branches'));
+      isPTLoading.value = true;
+      final response = await http.get(
+        Uri.parse('${APIConstants.baseUrl}/api/branch/other-branches'),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      print(' body :${response.body}');
+      print(' body :${response.statusCode}');
+
       if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-        destinations.value = data['branches']; // Assuming 'branches' is the key
+        isBRLoading.value = true;
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+        // Safely cast the tags list to List<dynamic>
+        final List<dynamic> branches = jsonResponse['branches'];
+
+        // Map the data to the parcelTypes list
+        final List<ParcelBranch> pBranch = branches.map((e) {
+          return ParcelBranch.fromJson(e);
+        }).toList();
+
+        parcelBranchs.addAll(pBranch);
       } else {
-        Get.snackbar('Error', 'Failed to fetch destinations');
+        throw Exception('Failed to load package types');
       }
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      print('Error fetching package types: $e');
+      throw Exception('Error fetching package types: $e');
     }
   }
 
@@ -225,19 +316,22 @@ class ParcelController extends GetxController {
           "Authorization": token,
         },
       );
-      print('${APIConstants.baseUrl}/api/tag/all-tags');
+      // print(' body :${response.body}');
+      // print(' body :${response.statusCode}');
 
       if (response.statusCode == 200) {
         isPTLoading.value = true;
-        // Parse the JSON response
-        // final List<dynamic> data = json.decode(response.body);
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+        // Safely cast the tags list to List<dynamic>
+        final List<dynamic> tags = jsonResponse['tags'];
+
         // Map the data to the parcelTypes list
-        final ptypes = jsonResponse['tags'].map((e) {
+        final List<ParcelType> ptypes = tags.map((e) {
           return ParcelType.fromJson(e);
         }).toList();
 
-        parcelTypes.addAll(ptypes);
+        parcelType.addAll(ptypes);
       } else {
         throw Exception('Failed to load package types');
       }
@@ -247,13 +341,13 @@ class ParcelController extends GetxController {
     }
   }
 
-
   Future<void> fetchDashboardData() async {
     try {
       isDataLoaded.value = true;
-       final token = await GetStorage().read('token');
-      final response = await http.get(Uri.parse('${APIConstants.baseUrl}/api/dashbord-data'),
-      headers: {
+      final token = await GetStorage().read('token');
+      final response = await http.get(
+        Uri.parse('${APIConstants.baseUrl}/api/dashbord-data'),
+        headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
           "Authorization": token,
@@ -276,5 +370,4 @@ class ParcelController extends GetxController {
       isDataLoaded.value = false;
     }
   }
-
 }
