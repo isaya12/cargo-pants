@@ -40,7 +40,8 @@ class PackageScreen extends StatelessWidget {
         throw Exception(data['message']);
       }
     } else {
-      throw Exception('Failed to fetch parcels. Status: ${response.statusCode}');
+      throw Exception(
+          'Failed to fetch parcels. Status: ${response.statusCode}');
     }
   }
 
@@ -74,94 +75,53 @@ class PackageScreen extends StatelessWidget {
                   child: Text('Error: ${snapshot.error}'),
                 );
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Center(
-                  child: Text('No ${incoming ? 'incoming' : 'outgoing'} parcels found'),
-                );
-              } else {
-                final parcels = snapshot.data!;
-                return SingleChildScrollView(
-                  child: Padding(
+                return
+                  Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-              
                         // const SizedBox(height: 16),
-                                            Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Parcels',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        Column(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(
-                              onPressed: () =>
-                                  Get.to(() =>  AddPackageScreen()),
-                              icon: const Icon(Iconsax.add),
-                              iconSize: 34,
-                              color: Colors.black,
-                            ),
                             const Text(
-                              'Add Parcel',
+                              'Parcels',
                               style: TextStyle(
-                                fontSize: 12,
-                              ),
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            Column(
+                              children: [
+                                IconButton(
+                                  onPressed: () =>
+                                      Get.to(() => AddPackageScreen()),
+                                  icon: const Icon(Iconsax.add),
+                                  iconSize: 34,
+                                  color: Colors.black,
+                                ),
+                                const Text(
+                                  'Add Parcel',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
+                        const SizedBox(height: 12),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             GestureDetector(
                               onTap: () => isIncoming.value = true,
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 16,horizontal:16),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 16),
                                 decoration: BoxDecoration(
-                                  color: incoming ? EColors.secondary : Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.3),
-                                      blurRadius: 5,
-                                      spreadRadius: 2,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                     Icon(
-          Iconsax.box,
-          size: 40,
-          color: incoming ? Colors.white : Colors.black,  // Change color here
-        ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      'Incoming Parcel',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: incoming ? Colors.white : Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            GestureDetector(
-                              onTap: () => isIncoming.value = false,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 16,horizontal:16),
-                                decoration: BoxDecoration(
-                                  color: !incoming ? EColors.secondary : Colors.white,
+                                  color: incoming
+                                      ? EColors.secondary
+                                      : Colors.white,
                                   borderRadius: BorderRadius.circular(12),
                                   boxShadow: [
                                     BoxShadow(
@@ -176,17 +136,207 @@ class PackageScreen extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(
-          Iconsax.box_tick,
-          size: 40,
-          color: !incoming ? Colors.white : Colors.black,  // Change color here
-        ),
+                                      Iconsax.box,
+                                      size: 40,
+                                      color: incoming
+                                          ? Colors.white
+                                          : Colors.black, // Change color here
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Incoming Parcel',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: incoming
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => isIncoming.value = false,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: !incoming
+                                      ? EColors.secondary
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.3),
+                                      blurRadius: 5,
+                                      spreadRadius: 2,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Iconsax.box_tick,
+                                      size: 40,
+                                      color: !incoming
+                                          ? Colors.white
+                                          : Colors.black, // Change color here
+                                    ),
                                     const SizedBox(height: 8),
                                     Text(
                                       'Outgoing Parcel',
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
-                                        color: !incoming ? Colors.white : Colors.black,
+                                        color: !incoming
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                         Padding(
+                           padding: const EdgeInsets.symmetric(vertical:40 ),
+                           child: Center(
+                             child: Text(
+                                                   'No ${incoming ? 'incoming' : 'outgoing'} parcels found'),
+                           ),
+                         ),
+                      ],
+                    ),
+                  
+                );
+              } else {
+                final parcels = snapshot.data!;
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Parcels',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            Column(
+                              children: [
+                                IconButton(
+                                  onPressed: () =>
+                                      Get.to(() => AddPackageScreen()),
+                                  icon: const Icon(Iconsax.add),
+                                  iconSize: 34,
+                                  color: Colors.black,
+                                ),
+                                const Text(
+                                  'Add Parcel',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () => isIncoming.value = true,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: incoming
+                                      ? EColors.secondary
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.3),
+                                      blurRadius: 5,
+                                      spreadRadius: 2,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Iconsax.box,
+                                      size: 40,
+                                      color: incoming
+                                          ? Colors.white
+                                          : Colors.black, // Change color here
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Incoming Parcel',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: incoming
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => isIncoming.value = false,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: !incoming
+                                      ? EColors.secondary
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.3),
+                                      blurRadius: 5,
+                                      spreadRadius: 2,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Iconsax.box_tick,
+                                      size: 40,
+                                      color: !incoming
+                                          ? Colors.white
+                                          : Colors.black, // Change color here
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Outgoing Parcel',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: !incoming
+                                            ? Colors.white
+                                            : Colors.black,
                                       ),
                                     ),
                                   ],
@@ -220,9 +370,13 @@ class PackageScreen extends StatelessWidget {
   Widget buildParcelItem(Parcel parcel) {
     final DateTime parsedDate = DateTime.parse(parcel.createdat);
     final String formattedDate = DateFormat('d, MMM yyyy').format(parsedDate);
-     String locationInfo = isIncoming.value ? parcel.branchCreated : parcel.destination;
+    String locationInfo =
+        isIncoming.value ? parcel.branchCreated : parcel.destination;
     return GestureDetector(
-      onTap: () => Get.to(() => PackageDetailsScreen(parcel: parcel, id:parcel.id,)),
+      onTap: () => Get.to(() => PackageDetailsScreen(
+            parcel: parcel,
+            id: parcel.id,
+          )),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
         padding: const EdgeInsets.all(12),
@@ -240,7 +394,8 @@ class PackageScreen extends StatelessWidget {
                 children: [
                   Text(
                     parcel.packageName,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4),
                   Text(

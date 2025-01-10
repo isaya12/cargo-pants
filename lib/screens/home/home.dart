@@ -134,16 +134,16 @@ class HomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SectionCard(
-                    title: "Received parcel",
-                    subtitle: "${data['received_30'] ?? 0}",
+                    subtitle: "Received parcel",
+                    title: "${data['received_30'] ?? 0}",
                     icon: Iconsax.box,
                   ),
                   SizedBox(
                     width: 15,
                   ),
                   SectionCard(
-                    subtitle: "${data['sent_30'] ?? 0}",
-                    title: " sent parcel",
+                    title: "${data['sent_30'] ?? 0}",
+                    subtitle: " sent parcel",
                     icon: Iconsax.box,
                   ),
                 ],
