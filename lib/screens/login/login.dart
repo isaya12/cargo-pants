@@ -1,5 +1,5 @@
 import 'package:cargo_pants/data/controller/usercontroller.dart';
-import 'package:cargo_pants/screens/home/home.dart';
+import 'package:cargo_pants/screens/navigation/navigation_menu.dart';
 import 'package:cargo_pants/utils/constants/colors.dart';
 import 'package:cargo_pants/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -12,12 +12,6 @@ class LoginScreen extends StatelessWidget {
 
   TextEditingController phone = TextEditingController();
   TextEditingController password = TextEditingController();
-
-  Future<void> login() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.setBool('isLoggedIn', true);
-    Get.offAll(() => HomePage());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +97,6 @@ class LoginScreen extends StatelessWidget {
                   ),
                   onPressed: () {
                     controller.login(phone.text, password.text);
-                    login();
                   },
                   child: const Text(
                     'Log in',

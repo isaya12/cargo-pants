@@ -382,19 +382,15 @@ Future<Parcel> fetchParcelById(int parcelId) async {
 
 
  Future<void> sendSms(String phoneList, String message) async {
-     final apiUrl = '${APIConstants.baseUrl}/sms/multiple';
+     final apiUrl = '${APIConstants.baseUrl}/api/sms/multiple';
     final token = await GetStorage().read('token');
     
     final payload = {
-  'phone_list': phoneList.split(','), // Convert comma-separated list to an array
+  'phone_list': phoneList,
   'message': message,
 };
-
    try {
-    // print('API URL: $apiUrl');
     print('Payload: ${jsonEncode(payload)}');
-    print('Authorization Token: $token');
-
     final response = await http.post(
       Uri.parse(apiUrl),
       headers: {
@@ -403,12 +399,19 @@ Future<Parcel> fetchParcelById(int parcelId) async {
       },
       body: jsonEncode(payload),
     );
-
     print('Response Status: ${response.statusCode}');
     print('Response Body: ${response.body}');
 
     if (response.statusCode == 200) {
       print('Message sent successfully');
+      Get.snackbar(
+        'Success', 
+        'Message sent successfully!',
+        snackPosition: SnackPosition.BOTTOM,  // Position at the bottom
+        backgroundColor: Colors.green,  // Set background color for success
+        colorText: Colors.white,  // Text color
+        duration: Duration(seconds: 2),  // Duration for the SnackBar
+      );
     } else {
       print('Failed to send message: ${response.body}');
       throw Exception('Failed to send message');

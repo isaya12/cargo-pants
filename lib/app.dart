@@ -1,5 +1,5 @@
 import 'package:cargo_pants/main.dart';
-import 'package:cargo_pants/screens/home/home.dart';
+import 'package:cargo_pants/screens/navigation/navigation_menu.dart';
 import 'package:cargo_pants/screens/login/login.dart';
 import 'package:cargo_pants/screens/onboarding/onboarding.dart';
 import 'package:flutter/material.dart';
@@ -33,10 +33,7 @@ class App extends StatelessWidget {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           home: initScreen == 0
-              ? const OnboadingScreen()
-              : loggedIn
-                  ?  HomePage()
-                  :  LoginScreen(),
+              ? const OnboadingScreen() :  LoginScreen(),
         );
       },
     );

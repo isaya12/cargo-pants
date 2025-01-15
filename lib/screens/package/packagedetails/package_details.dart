@@ -408,7 +408,7 @@ class PackageDetailsScreen extends StatelessWidget {
                 maxLines: 2,
                 controller: phoneController,
                 decoration: InputDecoration(
-                  labelText: 'Phone numbers ',
+                  labelText: 'Phone numbers (comma-separated)',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -432,6 +432,7 @@ class PackageDetailsScreen extends StatelessWidget {
         actions: [
           ElevatedButton(
             onPressed: () {
+              FocusScope.of(context).unfocus();
               Navigator.of(context).pop();
             },
             style: ElevatedButton.styleFrom(
@@ -444,22 +445,47 @@ class PackageDetailsScreen extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () async {
-              Navigator.of(context).pop();
+              FocusScope.of(context).unfocus();
               final String phoneList = phoneController.text.trim();
               final String message = messageController.text.trim();
 
-              if (phoneList.isEmpty || message.isEmpty) {
+              if (phoneList.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Please enter phone numbers and a message")),
+                  const SnackBar(content: Text("Please enter phone numbers")),
+                );
+                return;
+              }
+
+              if (message.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Please enter a message")),
+                );
+                return;
+              }
+
+              // Validate phone numbers
+              final List<String> phones = phoneList.split(',');
+              final validPhones = phones.where((phone) => RegExp(r'^06\d{8}|07\d{8}$').hasMatch(phone.trim())).toList();
+
+              if (validPhones.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Please enter valid phone numbers")),
                 );
                 return;
               }
 
               try {
-                await parcelController.sendSms(phoneList, message);
+                // Show loading indicator
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Sending message...")),
+                );
+
+                await parcelController.sendSms(validPhones.join(','), message);
+
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Message sent successfully!")),
                 );
+                Navigator.of(context).pop();
               } catch (error) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text("Error sending message: $error")),
@@ -479,7 +505,6 @@ class PackageDetailsScreen extends StatelessWidget {
     },
   );
 }
-
 
   // PDF generation
   Future<pw.Document> _generatePdf(Parcel parcel) async {
