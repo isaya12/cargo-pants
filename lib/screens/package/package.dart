@@ -371,7 +371,7 @@ class PackageScreen extends StatelessWidget {
     final DateTime parsedDate = DateTime.parse(parcel.createdat);
     final String formattedDate = DateFormat('d, MMM yyyy').format(parsedDate);
     String locationInfo =
-        isIncoming.value ? parcel.branchCreated : parcel.destination;
+        isIncoming.value ? parcel.branchCreated : parcel.branchCreated;
     return GestureDetector(
       onTap: () => Get.to(() => PackageDetailsScreen(
             parcel: parcel,
@@ -399,7 +399,7 @@ class PackageScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'ParcelID: ${parcel.barcodeId}',
+                    'ID: ${parcel.barcodeId}',
                     style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],

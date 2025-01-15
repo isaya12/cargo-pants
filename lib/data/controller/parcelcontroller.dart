@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:cargo_pants/model/parcel_model.dart';
 import 'package:cargo_pants/model/parcel_type_model.dart';
-import 'package:cargo_pants/screens/navigation/navigation_menu.dart';
 import 'package:cargo_pants/screens/package/packagedetails/package_details.dart';
 import 'package:cargo_pants/utils/constants/api_constants.dart';
 import 'package:http/http.dart' as http;
@@ -46,7 +45,9 @@ class ParcelController extends GetxController {
   var isBRLoading = false.obs;
   var dashboardData = {}.obs; // Use a reactive map to store dashboard data
   var isDataLoaded = false.obs; // To track loading state
+  
 
+  
   @override
   void onInit() {
     super.onInit();
@@ -130,8 +131,15 @@ Future<Parcel> fetchParcelById(int parcelId) async {
         body: jsonEncode(parcelData),
       );
       if (response.statusCode == 200) {
-        // print('Parcel created successfully: ${response.body}');
-        Get.offAll(() => NavigationMenu());
+        Get.snackbar(
+        'Success', 
+        'Parcel created successfully!',
+        snackPosition: SnackPosition.BOTTOM,  // Position at the bottom
+        backgroundColor: Colors.green,  // Set background color for success
+        colorText: Colors.white,  // Text color
+        duration: Duration(seconds: 2),  // Duration for the SnackBar
+      );
+        // Get.offAll(() => NavigationMenu());
       } else {
         throw Exception('Failed to create parcel: ${response.body}');
       }
@@ -284,7 +292,7 @@ Future<Parcel> fetchParcelById(int parcelId) async {
       }),
     );
 
-    // print('status code: ${response.statusCode} - ${response.body}');
+    print('status code: ${response.statusCode} - ${response.body}');
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -341,6 +349,7 @@ Future<Parcel> fetchParcelById(int parcelId) async {
     }
   }
 
+  
   Future<void> fetchDashboardData() async {
     try {
       isDataLoaded.value = true;
@@ -369,5 +378,44 @@ Future<Parcel> fetchParcelById(int parcelId) async {
     } finally {
       isDataLoaded.value = false;
     }
+  }
+
+
+ Future<void> sendSms(String phoneList, String message) async {
+     final apiUrl = '${APIConstants.baseUrl}/sms/multiple';
+    final token = await GetStorage().read('token');
+    
+    final payload = {
+  'phone_list': phoneList.split(','), // Convert comma-separated list to an array
+  'message': message,
+};
+
+   try {
+    // print('API URL: $apiUrl');
+    print('Payload: ${jsonEncode(payload)}');
+    print('Authorization Token: $token');
+
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token,
+      },
+      body: jsonEncode(payload),
+    );
+
+    print('Response Status: ${response.statusCode}');
+    print('Response Body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      print('Message sent successfully');
+    } else {
+      print('Failed to send message: ${response.body}');
+      throw Exception('Failed to send message');
+    }
+  } catch (error) {
+    print('Error sending message: $error');
+    throw error;
+  }
   }
 }

@@ -1,5 +1,4 @@
 class EValidator {
-
   // Validation for empty text fields
   static String? validateEmptyText(String fieldname, String? value) {
     if (value == null || value.isEmpty) return '$fieldname is required';
@@ -38,7 +37,8 @@ class EValidator {
   // Validation for parcel weight
   static String? validateParcelWeight(String? value) {
     if (value == null || value.isEmpty) return 'Parcel weight is required';
-    final weightRegExp = RegExp(r'^\d+(\.\d{1,2})?$'); // To allow decimal values
+    final weightRegExp =
+        RegExp(r'^\d+(\.\d{1,2})?$'); // To allow decimal values
     if (!weightRegExp.hasMatch(value)) {
       return 'Invalid weight format';
     }
@@ -89,8 +89,32 @@ class EValidator {
 
   // Validation for description (optional but no empty space allowed)
   static String? validateDescription(String? value) {
-    if (value != null && value.isEmpty) {
-      return 'Description cannot be empty';
+    if (value != null && value.isNotEmpty && value.length < 3) {
+      return 'Description must be at least 3 characters long';
+    }
+    return null;
+  }
+
+  static String? validateSpecfyLocation(String? value) {
+    if (value != null && value.isNotEmpty && value.length < 3) {
+      return 'Location must be at least 3 characters long';
+    }
+    return null;
+  }
+
+  static String? validatetransporterName(String? value) {
+    if (value != null && value.isNotEmpty && value.length < 3) {
+      return 'transporterName must be at least 3 characters long';
+    }
+    return null;
+  }
+
+  static String? validatetransporterPhone(String? value) {
+    if (value != null && value.isNotEmpty) {
+      final phoneRegExp = RegExp(r'^\d{10}$');
+      if (!phoneRegExp.hasMatch(value)) {
+        return 'Invalid phone number format (10 digits required)';
+      }
     }
     return null;
   }

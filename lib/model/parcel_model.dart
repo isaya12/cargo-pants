@@ -19,6 +19,7 @@ class Parcel {
   String packageName;
   String packageSize;
   String packageType;
+  String? packageTypePrint;
   String parcelValue;
   String parcelWeight;
   String destination;
@@ -30,7 +31,7 @@ class Parcel {
   String closedDescription;
   String fromRegion;
   String toRegion;
-   int? branchTo;
+   int branchTo;
   // String bid;
   String branchimage;
   // int incomingParcel;
@@ -59,6 +60,7 @@ class Parcel {
     required this.packageName,
     required this.packageSize,
     required this.packageType,
+    required this.packageTypePrint,
     required this.parcelValue,
     required this.parcelWeight,
     required this.destination,
@@ -72,7 +74,7 @@ class Parcel {
     required this.toRegion,
     // required this.bid,
     required this.branchimage,
-    // required this.branchTo,
+    required this.branchTo,
     // required this.incomingParcel,
     // required this.outgoing,
     // required this.received_30,
@@ -119,22 +121,25 @@ class Parcel {
     receiverName: json['receiver_name'] ?? '',
     barcodeId: json['barcode_id'] ?? '',
     receiverPhone: json['receiver_phone'] ?? '',
-    transporterName: json['transporter_name'] ?? '',
-    transporterPhone: json['transporter_phone'] ?? '',
+    transporterName: json['transporter_name'] ?? 'No transporter',
+    transporterPhone: json['transporter_phone'] ?? 'No phone',
     packageName: json['name'] ?? '',
     packageSize: json['package_size'] ?? '',
-    packageType: json['package_type'] ?? '',
-    parcelValue: json['parcel_value'] ?? '',
-    parcelWeight: json['parcel_weight'] ?? '',
+    packageType: (json['tag_name'] ?? '').toString(),
+    packageTypePrint: (json['package_tag'] ?? '').toString(),
+    parcelValue: (json['package_value'] ?? '').toString(),
+    parcelWeight: (json['package_weight'] ?? '').toString(),
     destination: json['destination'] ?? '',
     transportationPrice: json['price'] ?? '',
-    specifyLocation: json['specify_location'] ?? '',
-    description: json['description'] ?? '',
+    specifyLocation: json['specific_location'] ?? 'Not specified',
+    description: json['description'] ?? 'No comment',
     branchCreated: json['bname'] ?? '',
     createdat: json['created_at'] ?? '',
     closedDescription: json['closed_description'] ?? '',
     fromRegion: json['from_region'] ?? '',
     toRegion: json['to_region'] ?? '',
+    branchTo: int.tryParse(json['branch_to']?.toString() ?? '0') ?? 0,
+
     // bid: json['bid'] ?? '',
     branchimage: json['branch_image'] ?? '',
     // branchTo: json['branch_to'] ?? '',

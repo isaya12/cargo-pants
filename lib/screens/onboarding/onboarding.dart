@@ -9,11 +9,9 @@ class OnboadingScreen extends StatelessWidget {
   const OnboadingScreen({super.key});
 
  Future<void> _completeOnboarding() async {
-    // Save onboarding completion state in SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('initScreen', 1);
 
-    // Navigate to LoginScreen and clear the navigation stack
     Get.off(() =>  LoginScreen());
   }
   
@@ -76,7 +74,7 @@ class OnboadingScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     ElevatedButton(
-                      onPressed: () => Get.to(() => LoginScreen()),
+                      onPressed: _completeOnboarding,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: EColors.primary,
                         shape: RoundedRectangleBorder(

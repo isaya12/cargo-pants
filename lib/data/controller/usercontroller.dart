@@ -20,6 +20,11 @@ class UserController extends GetxController {
 
   final GetStorage storage = GetStorage(); // GetStorage instance
 
+  // bool isLoggedIn() {
+  //   final token = storage.read<String>('token');
+  //   return token != null && token.isNotEmpty;
+  // }
+
   Future<void> login(String phone, String password) async {
     isLoading.value = true;
 
@@ -38,6 +43,7 @@ class UserController extends GetxController {
           // Extract the accessToken and userId
           final accessToken = data['token']['accessToken'];
           final userId = data['user']['id'];
+          final userbranchId = (data['user']['branch_id']).toString();
           final branchImage = data['user']['branch_image'];
           final fullName = data['user']['fulname'];
           final branchname = data['user']['branch_name'];
@@ -48,9 +54,10 @@ class UserController extends GetxController {
 
           if (accessToken is String && userId != null) {
             // Save the accessToken and userId
+            // storage.write('isLoggedIn', true);
             saveToken(accessToken);
             saveUserId(userId.toString());
-            saveBranchId(data['user']['branch_id'].toString());
+            saveBranchId(userbranchId);
             saveBranchImage(branchImage); // Save userId as a string
             saveUserFullName(fullName);
             saveUsername(branchname);
@@ -102,8 +109,8 @@ class UserController extends GetxController {
     }
   }
 
-  void saveBranchId(String branchId) {
-    storage.write('branchId', branchId);
+  void saveBranchId(String userbranchId) {
+    storage.write('userbranchId', userbranchId);
   }
 
   void saveBranchImage(String branchImage) {
@@ -130,9 +137,11 @@ class UserController extends GetxController {
   void saveAvatar(String avatar) {
     storage.write('avatar', avatar);
   }
+
   void companyname(String companyname) {
     storage.write('company_name', companyname);
   }
+
   void savebrachRegion(String savebrachRegion) {
     storage.write('branch_region', savebrachRegion);
   }

@@ -17,9 +17,9 @@ import 'package:get/get.dart';
 class PackageDetailsScreen extends StatelessWidget {
   final Parcel parcel;
   final int id;
-  const PackageDetailsScreen(
-      {super.key, required this.parcel, required this.id});
+  PackageDetailsScreen({super.key, required this.parcel, required this.id});
 
+  final ValueNotifier<bool> isIncoming = ValueNotifier(true);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,113 +62,113 @@ class PackageDetailsScreen extends StatelessWidget {
     );
   }
 
- // Function to build a summary card for parcel details
-Widget buildSummaryCard(Parcel parcel) {
-  final details = {
-    "Sender Name:": parcel.senderName,
-    "Sender Phone:": parcel.senderPhone,
-    "Receiver Name:": parcel.receiverName,
-    "Receiver Phone:": parcel.receiverPhone,
-    "Transporter Name:": parcel.transporterName,
-    "Transporter Phone:": parcel.transporterPhone,
-    "Package Name:": parcel.packageName,
-    "Package Size:": parcel.packageSize,
-    "Package Type:": parcel.packageType,
-    "Package Value:": parcel.parcelValue,
-    "Package Weight:": "${parcel.parcelWeight} kg",
-    "Destination:": parcel.destination,
-    "Transportation Price:": "Tsh ${parcel.transportationPrice}",
-    "Specific Location:": parcel.specifyLocation,
-    "Description:": parcel.description,
-    "Branch Created:": parcel.branchCreated,
-  };
+  // Function to build a summary card for parcel details
+  Widget buildSummaryCard(Parcel parcel) {
+    final details = {
+      "Sender Name:": parcel.senderName,
+      "Sender Phone:": parcel.senderPhone,
+      "Receiver Name:": parcel.receiverName,
+      "Receiver Phone:": parcel.receiverPhone,
+      "Transporter Name:": parcel.transporterName,
+      "Transporter Phone:": parcel.transporterPhone,
+      "Package Name:": parcel.packageName,
+      "Package Size:": parcel.packageSize,
+      "Package Type:": parcel.packageType.toString(),
+      "Package Value:": parcel.parcelValue,
+      "Package Weight:": "${parcel.parcelWeight} kg",
+      "Destination:": parcel.branchCreated,
+      "Transportation Price:": "Tsh ${parcel.transportationPrice}",
+      "Specific Location:": parcel.specifyLocation,
+      "Description:": parcel.description,
+      // "Branch Created:":isIncoming.value ? parcel.branchCreated : parcel.description ,
+    };
 
-  final showDivider = {
-    "Sender Name:": false,
-    "Sender Phone:": false,
-    "Receiver Name:": false,
-    "Receiver Phone:": false,
-    "Transporter Name:": false, // No divider below Transporter Name
-    "Transporter Phone:": true,
-    "Package Name:": false,
-    "Package Size:": false,
-    "Package Type:": false,
-    "Package Value:": false,
-    "Package Weight:": false,
-    "Destination:": true,
-    "Transportation Price:": false,
-    "Specific Location:": false, // No divider below Specific Location
-    "Description:": false, // No divider below Description
-    "Branch Created:": true,
-  };
+    final showDivider = {
+      "Sender Name:": false,
+      "Sender Phone:": false,
+      "Receiver Name:": false,
+      "Receiver Phone:": false,
+      "Transporter Name:": false, // No divider below Transporter Name
+      "Transporter Phone:": true,
+      "Package Name:": false,
+      "Package Size:": false,
+      "Package Type:": false,
+      "Package Value:": false,
+      "Package Weight:": false,
+      "Destination:": true,
+      "Transportation Price:": false,
+      "Specific Location:": false, // No divider below Specific Location
+      "Description:": true, // No divider below Description
+      "Branch Created:": true,
+    };
 
-  return Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.shade200,
-          blurRadius: 4,
-          offset: const Offset(0, 2),
-        ),
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: details.entries.map((entry) {
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: Text(
-                      entry.key,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 4,
-                    child: Align(
-                      alignment: Alignment.centerRight,
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade200,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: details.entries.map((entry) {
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 3,
                       child: Text(
-                        entry.value,
-                        style: const TextStyle(fontSize: 14),
-                        textAlign: TextAlign.right,
+                        entry.key,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    Expanded(
+                      flex: 4,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          entry.value,
+                          style: const TextStyle(fontSize: 14),
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            // Add Divider if showDivider for this key is true
-            if (showDivider[entry.key] == true)
-              Divider(
-                color: Colors.grey.shade300,
-                thickness: 1,
-              ),
-          ],
-        );
-      }).toList(),
-    ),
-  );
-}
+              // Add Divider if showDivider for this key is true
+              if (showDivider[entry.key] == true)
+                Divider(
+                  color: Colors.grey.shade300,
+                  thickness: 1,
+                ),
+            ],
+          );
+        }).toList(),
+      ),
+    );
+  }
 
   // Action buttons based on parcel status
   Widget buildActionButtons(BuildContext context) {
     final storage = GetStorage();
-    final userBranch = storage.read<String>('branchId') ?? '';
-    String value = userBranch;
+    final userBranchID = storage.read<String>('userbranchId') ?? '';
+    String value = userBranchID;
     int? parsedValue = int.tryParse(value);
-    //  print('userBranch: $userBranch, parsedValue: $parsedValue');
+     print('userBranch: $userBranchID, parsedValue: $parsedValue');
     //  print('userBranch: ${parcel.bid}');
     return Container(
       padding: const EdgeInsets.all(16),
@@ -189,7 +189,7 @@ Widget buildSummaryCard(Parcel parcel) {
             mainAxisAlignment:
                 MainAxisAlignment.spaceBetween, // Add space between buttons
             children: [
-              if (parcel.branchCreated != parsedValue) ...[
+              if (parcel.branchTo != parsedValue) ...[
                 buildButton(context, "Receive", Colors.green, () {
                   // Call showActionDialog with "receive" as the action type
                   showActionDialog(context, "receive");
@@ -220,21 +220,50 @@ Widget buildSummaryCard(Parcel parcel) {
             mainAxisAlignment:
                 MainAxisAlignment.spaceBetween, // Add space between buttons
             children: [
-              if (parcel.branchCreated != parsedValue) ...[
+              if (parcel.branchTo != parsedValue) ...[
                 // print('we ${parcel.bid}');
                 buildButton(context, "Update", Colors.orange, () {
-                  Get.to(() => UpdateParcelScreen(parcel:parcel));
+                  Get.to(() => UpdateParcelScreen(parcel: parcel));
                 }),
                 buildButton(context, "Delete", Colors.red, () {
                   // Call showActionDialog with "delete" as the action type
                   showActionDialog(context, "delete");
                 }),
-              ] else if (parcel.branchCreated == parsedValue) ...[
+              ] else if (parcel.branchTo == parsedValue) ...[
                 buildButton(context, "Receive", Colors.green, () {
                   // Call showActionDialog with "receive" as the action type
                   showActionDialog(context, "receive");
                 }),
               ],
+            ],
+          ),
+          const SizedBox(height: 8),
+          Column(
+            children: [
+              if (parcel.branchTo != parsedValue) ...[
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showMessageDialog(context, "receive");
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: EColors.secondary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'send message',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ]
             ],
           ),
         ],
@@ -249,23 +278,23 @@ Widget buildSummaryCard(Parcel parcel) {
     Color color,
     VoidCallback onPressed,
   ) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        padding: const EdgeInsets.symmetric(
-          vertical: 12,
-          horizontal: 40,
+    return SizedBox(
+      width: 120, // Set a fixed width
+      height: 50,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
+        child: Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -358,6 +387,100 @@ Widget buildSummaryCard(Parcel parcel) {
     );
   }
 
+  void showMessageDialog(BuildContext context, String actionType) {
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController messageController = TextEditingController();
+  final ParcelController parcelController = Get.put(ParcelController());
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Send Message'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Send a message to more than one person'),
+              const SizedBox(height: 10),
+              TextField(
+                minLines: 1,
+                maxLines: 2,
+                controller: phoneController,
+                decoration: InputDecoration(
+                  labelText: 'Phone numbers ',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                minLines: 2,
+                maxLines: 4,
+                controller: messageController,
+                decoration: InputDecoration(
+                  labelText: 'Message',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+              final String phoneList = phoneController.text.trim();
+              final String message = messageController.text.trim();
+
+              if (phoneList.isEmpty || message.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Please enter phone numbers and a message")),
+                );
+                return;
+              }
+
+              try {
+                await parcelController.sendSms(phoneList, message);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Message sent successfully!")),
+                );
+              } catch (error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Error sending message: $error")),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: EColors.secondary,
+            ),
+            child: const Text(
+              'Send',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
   // PDF generation
   Future<pw.Document> _generatePdf(Parcel parcel) async {
     final pdf = pw.Document();
@@ -428,11 +551,6 @@ Widget buildSummaryCard(Parcel parcel) {
                   ),
                   pw.SizedBox(height: 10),
                   pw.Text(
-                    "Brand name: ${parcel.barcodeId}",
-                    style: const pw.TextStyle(fontSize: 16),
-                  ),
-                  pw.SizedBox(height: 10),
-                  pw.Text(
                     "Journey route: ${parcel.fromRegion} - ${parcel.toRegion}",
                     style: const pw.TextStyle(fontSize: 16),
                   ),
@@ -459,19 +577,19 @@ Widget buildSummaryCard(Parcel parcel) {
                   ),
                   pw.Text(
                     "Sender Name: ${parcel.senderName}",
-                    style: pw.TextStyle(fontSize: 16),
+                    style: const pw.TextStyle(fontSize: 16),
                   ),
                   pw.Text(
                     "Sender Phone: ${parcel.senderPhone}",
-                    style: pw.TextStyle(fontSize: 16),
+                    style: const pw.TextStyle(fontSize: 16),
                   ),
                   pw.Text(
                     "Receiver Name: ${parcel.receiverName}",
-                    style: pw.TextStyle(fontSize: 16),
+                    style: const pw.TextStyle(fontSize: 16),
                   ),
                   pw.Text(
                     "Receiver Phone: ${parcel.receiverPhone}",
-                    style: pw.TextStyle(fontSize: 16),
+                    style: const pw.TextStyle(fontSize: 16),
                   ),
                   pw.SizedBox(height: 10),
                   pw.Text(
@@ -483,41 +601,41 @@ Widget buildSummaryCard(Parcel parcel) {
                   ),
                   pw.Text(
                     "Package Name: ${parcel.packageName}",
-                    style: pw.TextStyle(fontSize: 16),
+                    style: const pw.TextStyle(fontSize: 16),
                   ),
                   pw.Text(
-                    "Package Weight: ${parcel.description}",
-                    style: pw.TextStyle(fontSize: 16),
+                    "Package Weight: ${parcel.parcelWeight}",
+                    style: const pw.TextStyle(fontSize: 16),
                   ),
                   pw.Text(
                     "Package Size: ${parcel.packageSize}",
-                    style: pw.TextStyle(fontSize: 16),
+                    style: const pw.TextStyle(fontSize: 16),
                   ),
                   pw.Text(
-                    "Package Value: ${parcel.description}",
-                    style: pw.TextStyle(fontSize: 16),
+                    "Package Value: ${parcel.parcelValue}",
+                    style: const pw.TextStyle(fontSize: 16),
                   ),
                   pw.Text(
-                    "Package Type: ${parcel.description}",
-                    style: pw.TextStyle(fontSize: 16),
+                    "Package Type: ${parcel.packageTypePrint}",
+                    style: const pw.TextStyle(fontSize: 16),
                   ),
                   pw.SizedBox(height: 10),
                   pw.Text(
                     "Agent Name: ${parcel.fullName}",
-                    style: pw.TextStyle(fontSize: 16),
+                    style: const pw.TextStyle(fontSize: 16),
                   ),
                   pw.Text(
                     "Agent Phone: ${parcel.phone1}",
-                    style: pw.TextStyle(fontSize: 16),
+                    style: const pw.TextStyle(fontSize: 16),
                   ),
-                  pw.Text(
-                    "${parcel.fromRegion} : ${parcel.bbfromcontact}",
-                    style: pw.TextStyle(fontSize: 16),
-                  ),
-                  pw.Text(
-                    "${parcel.toRegion} :",
-                    style: pw.TextStyle(fontSize: 16),
-                  ),
+                  // pw.Text(
+                  //   "${parcel.fromRegion} : ${parcel.bbfromcontact}",
+                  //   style: pw.TextStyle(fontSize: 16),
+                  // ),
+                  // pw.Text(
+                  //   "${parcel.toRegion} :",
+                  //   style: pw.TextStyle(fontSize: 16),
+                  // ),
                   pw.SizedBox(height: 10),
                   if (barcodeImage != null)
                     pw.Center(

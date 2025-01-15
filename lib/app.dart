@@ -1,18 +1,44 @@
-// import 'package:cargo_pants/screens/home/home.dart';
-// import 'package:cargo_pants/screens/package/package.dart';
-// import 'package:cargo_pants/screens/package/packagedetails/package_details.dart';
+import 'package:cargo_pants/main.dart';
+import 'package:cargo_pants/screens/home/home.dart';
+import 'package:cargo_pants/screens/login/login.dart';
 import 'package:cargo_pants/screens/onboarding/onboarding.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
 
+  Future<bool> isLoggedIn() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getBool('isLoggedIn') ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: OnboadingScreen(),
+    return FutureBuilder<bool>(
+      future: isLoggedIn(),
+      builder: (context, snapshot) {
+        // Show splash/loading screen while waiting for the result
+        if (!snapshot.hasData) {
+          return const MaterialApp(
+            home: Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            ),
+          );
+        }
+
+        final bool loggedIn = snapshot.data!;
+
+        return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: initScreen == 0
+              ? const OnboadingScreen()
+              : loggedIn
+                  ?  HomePage()
+                  :  LoginScreen(),
+        );
+      },
     );
   }
 }

@@ -28,7 +28,7 @@ class UpdateParcelScreen extends StatelessWidget {
       (e) => e.toString().split('.').last == parcel.packageSize,
       orElse: () => ParcelSizes.small, // Default size if no match
     );
-    selectedPackageType.value = parcel.packageType ?? '';
+    selectedPackageType.value = parcel.packageTypePrint ?? '';
     selectedBranch.value = parcel.branchTo?.toString() ?? '';
   }
 
@@ -50,6 +50,7 @@ class UpdateParcelScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     ParcelController parcelController = Get.put(ParcelController());
     var packages = parcelController.parcelTypes.value;
+    print('Available packages: $packages');
     var parcelBr = parcelController.parcelBranch.value;
 
     return Scaffold(
@@ -83,7 +84,6 @@ class UpdateParcelScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                _buildRow(
                   _buildTextField(
                     controller: controller.senderNameController,
                     labelText: 'Sender name',
@@ -91,13 +91,13 @@ class UpdateParcelScreen extends StatelessWidget {
                     validator: (value) =>
                         EValidator.validateEmptyText('Sender name', value),
                   ),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     controller: controller.senderPhoneController,
                     labelText: 'Sender phone',
                     prefixIcon: Iconsax.call,
                     validator: (value) => EValidator.validatePhoneNumber(value),
                   ),
-                ),
                 const SizedBox(height: 16),
                 _buildTextField(
                   controller: controller.receiverNameController,
@@ -116,20 +116,19 @@ class UpdateParcelScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildTextField(
                   controller: controller.transporterNameController,
-                  labelText: 'Transporter name',
+                  labelText: 'Transporter name(option)',
                   prefixIcon: Iconsax.truck,
                   validator: (value) =>
-                      EValidator.validateEmptyText('Transporter name', value),
+                      EValidator.validatetransporterName( value),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
                   controller: controller.transporterPhoneController,
-                  labelText: 'Transporter phone',
+                  labelText: 'Transporter phone(option)',
                   prefixIcon: Iconsax.call,
-                  validator: (value) => EValidator.validatePhoneNumber(value),
+                  validator: (value) => EValidator.validatetransporterPhone(value),
                 ),
                 const SizedBox(height: 16),
-                _buildRow(
                   _buildTextField(
                     controller: controller.packageNameController,
                     labelText: 'Package name',
@@ -137,6 +136,7 @@ class UpdateParcelScreen extends StatelessWidget {
                     validator: (value) =>
                         EValidator.validateEmptyText('Package name', value),
                   ),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     controller: controller.parcelValueController,
                     labelText: 'Parcel value',
@@ -144,7 +144,6 @@ class UpdateParcelScreen extends StatelessWidget {
                     validator: (value) =>
                         EValidator.validateEmptyText('Parcel value', value),
                   ),
-                ),
                 const SizedBox(height: 16),
                 Obx(() {
                   return DropdownButtonFormField<String>(
@@ -243,7 +242,7 @@ class UpdateParcelScreen extends StatelessWidget {
                   labelText: 'Specify location (optional)',
                   prefixIcon: Iconsax.location,
                   validator: (value) =>
-                      EValidator.validateEmptyText('Specify location', value),
+                      EValidator.validateSpecfyLocation( value),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
@@ -251,7 +250,7 @@ class UpdateParcelScreen extends StatelessWidget {
                   labelText: 'Description (optional)',
                   prefixIcon: Iconsax.document_text,
                   validator: (value) =>
-                      EValidator.validateEmptyText('Description', value),
+                      EValidator.validateDescription( value),
                 ),
                 const SizedBox(height: 30),
                 SizedBox(
@@ -316,7 +315,7 @@ class UpdateParcelScreen extends StatelessWidget {
                     child: const Text(
                       'Update Parcel',
                       style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                          fontSize: ESizes.fontSizeSm, color:EColors.white),
                     ),
                   ),
                 ),

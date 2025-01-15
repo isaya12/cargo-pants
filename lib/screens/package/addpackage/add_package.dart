@@ -60,7 +60,7 @@ class AddPackageScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 30),
-                _buildRow(
+                
                   _buildTextField(
                     controller: controller.senderNameController,
                     labelText: 'Sender name',
@@ -68,13 +68,14 @@ class AddPackageScreen extends StatelessWidget {
                     validator: (value) =>
                         EValidator.validateEmptyText('Sender name', value),
                   ),
+                  const SizedBox(height: 30),
                   _buildTextField(
                     controller: controller.senderPhoneController,
                     labelText: 'Sender phone',
                     prefixIcon: Iconsax.call,
                     validator: (value) => EValidator.validatePhoneNumber(value),
                   ),
-                ),
+                
                 const SizedBox(height: 16),
                 _buildTextField(
                   controller: controller.receiverNameController,
@@ -93,20 +94,20 @@ class AddPackageScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildTextField(
                   controller: controller.transporterNameController,
-                  labelText: 'Transporter name',
+                  labelText: 'Transporter name (option)',
                   prefixIcon: Iconsax.truck,
                   validator: (value) =>
-                      EValidator.validateEmptyText('Transporter name', value),
+                      EValidator.validatetransporterName( value),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
                   controller: controller.transporterPhoneController,
-                  labelText: 'Transporter phone',
+                  labelText: 'Transporter phone (option)',
                   prefixIcon: Iconsax.call,
-                  validator: (value) => EValidator.validatePhoneNumber(value),
+                  validator: (value) => EValidator.validatetransporterPhone(value),
                 ),
                 const SizedBox(height: 16),
-                _buildRow(
+                
                   _buildTextField(
                     controller: controller.packageNameController,
                     labelText: 'Package name',
@@ -114,6 +115,7 @@ class AddPackageScreen extends StatelessWidget {
                     validator: (value) =>
                         EValidator.validateEmptyText('Package name', value),
                   ),
+                  const SizedBox(height: 30),
                   _buildTextField(
                     controller: controller.parcelValueController,
                     labelText: 'Parcel value',
@@ -121,7 +123,7 @@ class AddPackageScreen extends StatelessWidget {
                     validator: (value) =>
                         EValidator.validateEmptyText('Parcel value', value),
                   ),
-                ),
+              
                 const SizedBox(height: 16),
                 Obx(() {
                   return DropdownButtonFormField<String>(
@@ -215,20 +217,20 @@ class AddPackageScreen extends StatelessWidget {
                       'Transportation Price', value),
                 ),
                 const SizedBox(height: 16),
-                _buildTextField(
-                  controller: controller.specifyLocationController,
-                  labelText: 'Specify location (optional)',
-                  prefixIcon: Iconsax.location,
-                  validator: (value) =>
-                      EValidator.validateEmptyText('Specify location', value),
-                ),
+               _buildTextField(
+  controller: controller.specifyLocationController,
+  labelText: 'Specify location (optional)',
+  prefixIcon: Iconsax.location,
+  validator: (value) => EValidator.validateSpecfyLocation(value),
+),
+
                 const SizedBox(height: 16),
                 _buildTextField(
                   controller: controller.descriptionController,
                   labelText: 'Description (optional)',
                   prefixIcon: Iconsax.document_text,
                   validator: (value) =>
-                      EValidator.validateEmptyText('Description', value),
+                      EValidator.validateDescription(value),
                 ),
                 const SizedBox(height: 30),
                 SizedBox(
@@ -276,16 +278,8 @@ class AddPackageScreen extends StatelessWidget {
                         };
 
                         ParcelController.createParcel(parcelData)
-                            .then((value) => Get.snackbar(
-                                  'Success',
-                                  'Parcel created successfully!',
-                                  snackPosition: SnackPosition.BOTTOM,
-                                ))
-                            .catchError((error) => Get.snackbar(
-                                  'Error',
-                                  error.toString(),
-                                  snackPosition: SnackPosition.BOTTOM,
-                                ));
+                            .then((value) =>print('success'))
+                            .catchError((error) =>print('error'));
                       }
                     },
                     child: const Text('Create Parcel',style: TextStyle(color: Colors.white),),
@@ -315,7 +309,9 @@ class AddPackageScreen extends StatelessWidget {
     required TextEditingController controller,
     required String labelText,
     required IconData prefixIcon,
-    required String? Function(String?)? validator,
+    required String? Function(String?) validator,
+    TextInputType keyboardType = TextInputType.text,
+    bool isOptional = false,
   }) {
     return TextFormField(
       controller: controller,
@@ -326,7 +322,8 @@ class AddPackageScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      validator: validator,
+     validator: isOptional ? null : validator,
+     keyboardType: keyboardType,
     );
   }
 }
